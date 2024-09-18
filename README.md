@@ -57,3 +57,5 @@ Run the terminal command `$go run main.go`
 1. Run `$chmod +x build.sh`
 2. Run `$./build.sh`
 3. Run `$./main.bin`. 
+
+NOTE: When building or run in go enviroment the message `$ld: warning: ignoring duplicate libraries: '-lobjc'` might pop up in terminal. To my knowledge this doesn't affect the program's functionality
