@@ -13,6 +13,9 @@ import (
 
 func main() {
 	args := make([]string, 5)
+	var pattern string
+	var T string
+	var bpm int
 
 	RGgui := app.New()
 	window := RGgui.NewWindow("Rhythm Generator")
@@ -42,8 +45,8 @@ func main() {
 	beats := widget.NewEntry()
 	beats.SetPlaceHolder("Beats")
 
-	bpm := widget.NewEntry()
-	bpm.SetPlaceHolder("BPM")
+	bpmInput := widget.NewEntry()
+	bpmInput.SetPlaceHolder("BPM")
 
 	playing := widget.NewLabel("")
 
@@ -55,6 +58,7 @@ func main() {
 	stopChannel2 := make(chan struct{})
 	var playButton *widget.Button
 	var stopButton *widget.Button
+	var invertButton *widget.Button
 
 	stopButton = widget.NewButton("Stop", func() {
 		go func() {
@@ -63,21 +67,32 @@ func main() {
 		go func() {
 			stopChannel2 <- struct{}{}
 		}()
+		invertButton.Enable()
 		playButton.Enable()
 		stopButton.Disable()
 		bar.SetText("Stopped")
 	})
 
+	invertButton = widget.NewButton("Invert Pattern", func() {
+		if pattern != "" {
+			pattern = pattern[1:] + pattern[0:1]
+			playingPattern.SetText(pattern)
+		}
+	})
+	invertButton.Disable()
+
 	playButton = widget.NewButton("Play", func() {
+		invertButton.Disable()
 		playButton.Disable()
 		stopButton.Enable()
 		args[0] = steps.Text
 		args[1] = beats.Text
-		args[2] = bpm.Text
+		args[2] = bpmInput.Text
 		args[3] = algType
 		args[4] = fill
-
-		pattern, T, bpm := rhythmgenerator.RGMain(args)
+		if pattern == "" {
+			pattern, T, bpm = rhythmgenerator.RGMain(args)
+		}
 		if rhythmgenerator.InputError != "" {
 			playing.SetText(rhythmgenerator.InputError)
 			if rhythmgenerator.InputErrorSolution != "" {
@@ -120,7 +135,7 @@ func main() {
 		}
 	})
 
-	content := container.NewVBox(steps, beats, bpm, playButton, stopButton, algCheckbox, fillCheckbox, playing, bar, playingPattern)
+	content := container.NewVBox(steps, beats, bpmInput, playButton, stopButton, invertButton, algCheckbox, fillCheckbox, playing, bar, playingPattern)
 	window.SetContent(content)
 	window.ShowAndRun()
 }
