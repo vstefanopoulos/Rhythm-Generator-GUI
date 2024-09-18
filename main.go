@@ -22,7 +22,7 @@ func main() {
 	window.Resize(fyne.NewSize(400, 300))
 
 	var algType string = "Euclidean"
-	algCheckbox := widget.NewCheck("Use Custom Algorithm", func(value bool) {
+	algCheckbox := widget.NewCheck("Custom Algorithm", func(value bool) {
 		if value {
 			algType = "Custom"
 		} else {
@@ -48,11 +48,11 @@ func main() {
 	bpmInput := widget.NewEntry()
 	bpmInput.SetPlaceHolder("BPM")
 
-	playing := widget.NewLabel("")
+	patternInfo := widget.NewLabel("")
 
 	bar := widget.NewLabel("")
 
-	playingPattern := widget.NewLabel("")
+	genPattern := widget.NewLabel("")
 
 	stopChannel := make(chan struct{})
 	stopChannel2 := make(chan struct{})
@@ -76,10 +76,12 @@ func main() {
 	})
 	stopButton.Disable()
 
+	var inverted bool
 	invertRightButton = widget.NewButton("Invert Right", func() {
 		if pattern != "" {
 			pattern = pattern[len(pattern)-1:] + pattern[0:len(pattern)-1]
-			playingPattern.SetText(pattern)
+			genPattern.SetText(pattern)
+			inverted = true
 		}
 	})
 	invertRightButton.Disable()
@@ -87,7 +89,8 @@ func main() {
 	invertLeftButton = widget.NewButton("Invert Left", func() {
 		if pattern != "" {
 			pattern = pattern[1:] + pattern[0:1]
-			playingPattern.SetText(pattern)
+			genPattern.SetText(pattern)
+			inverted = true
 		}
 	})
 	invertLeftButton.Disable()
@@ -102,11 +105,12 @@ func main() {
 		args[2] = bpmInput.Text
 		args[3] = algType
 		args[4] = fill
-		if pattern == "" {
+		if pattern == "" || !inverted {
 			pattern, T, bpm = rhythmgenerator.RGMain(args)
 		}
+		inverted = false
 		if rhythmgenerator.InputError != "" {
-			playing.SetText(rhythmgenerator.InputError)
+			patternInfo.SetText(rhythmgenerator.InputError)
 			if rhythmgenerator.InputErrorSolution != "" {
 				bar.SetText(rhythmgenerator.InputErrorSolution)
 			}
@@ -117,8 +121,8 @@ func main() {
 		if pattern != "" {
 			go func() {
 				var wg sync.WaitGroup
-				playing.SetText(fmt.Sprintf("Pattern: %v Algorithm", T))
-				playingPattern.SetText(pattern)
+				patternInfo.SetText(fmt.Sprintf("Pattern: %v Algorithm", T))
+				genPattern.SetText(pattern)
 				var barCount int
 
 				for {
@@ -146,9 +150,12 @@ func main() {
 			}()
 		}
 	})
-	playStopButtonRow := container.NewVBox(playButton, stopButton)
+	playStopCon := container.NewVBox(playButton, stopButton)
 	invertButtonRow := container.NewHBox(invertLeftButton, invertRightButton)
-	content := container.NewVBox(steps, beats, bpmInput, playStopButtonRow, invertButtonRow, algCheckbox, fillCheckbox, playing, bar, playingPattern)
+	checkBoxesRow := container.NewHBox(algCheckbox, fillCheckbox)
+	infoBarRow := container.NewHBox(patternInfo, bar)
+
+	content := container.NewVBox(steps, beats, bpmInput, playStopCon, invertButtonRow, checkBoxesRow, infoBarRow, genPattern)
 	window.SetContent(content)
 	window.ShowAndRun()
 }
