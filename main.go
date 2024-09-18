@@ -150,12 +150,12 @@ func main() {
 			}()
 		}
 	})
-	playStopCon := container.NewVBox(playButton, stopButton)
+
 	invertButtonRow := container.NewHBox(invertLeftButton, invertRightButton)
 	checkBoxesRow := container.NewHBox(algCheckbox, fillCheckbox)
 	infoBarRow := container.NewHBox(patternInfo, bar)
 
-	content := container.NewVBox(steps, beats, bpmInput, playStopCon, invertButtonRow, checkBoxesRow, infoBarRow, genPattern)
+	content := container.NewVBox(steps, beats, bpmInput, playButton, stopButton, invertButtonRow, checkBoxesRow, infoBarRow, genPattern)
 	window.SetContent(content)
 	window.ShowAndRun()
 }

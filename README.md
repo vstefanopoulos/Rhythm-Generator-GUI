@@ -28,6 +28,10 @@ Tick the fill steps box to fill an sparse beats populated pattern or to add more
 ### Play/Stop
 
 When you hit play you see the type of Pattern ie `Pattern: Custom Filled Algorithm`. The pattern is repeated until stop is pressed and the iteration count is indicated on the `bar` label. Below that you can see the notation of the generated pattern with `X` indicating the beats, `o` the offsets and `x` the filled steps. The `X`'s trigger a snare rimshot sound, the `o`'s trigger a closed hi hat sound and the `x`'s trigger a snare side stick sound. After the playback is stopped you can restart it by pressing play again or first change any of the parameters and then play the new pattern.
+## **Compatibility**
+
+- macOS 10.15 Catalina or later
+- Go v1.22.2
 
 ## **Installation**
 You can run the program in a go enviroment or build using the `build.sh` file provided to run as an executable.
