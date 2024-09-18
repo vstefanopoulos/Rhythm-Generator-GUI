@@ -58,7 +58,8 @@ func main() {
 	stopChannel2 := make(chan struct{})
 	var playButton *widget.Button
 	var stopButton *widget.Button
-	var invertButton *widget.Button
+	var invertRightButton *widget.Button
+	var invertLeftButton *widget.Button
 
 	stopButton = widget.NewButton("Stop", func() {
 		go func() {
@@ -67,22 +68,33 @@ func main() {
 		go func() {
 			stopChannel2 <- struct{}{}
 		}()
-		invertButton.Enable()
+		invertLeftButton.Enable()
+		invertRightButton.Enable()
 		playButton.Enable()
 		stopButton.Disable()
 		bar.SetText("Stopped")
 	})
+	stopButton.Disable()
 
-	invertButton = widget.NewButton("Invert Pattern", func() {
+	invertRightButton = widget.NewButton("Invert Right", func() {
+		if pattern != "" {
+			pattern = pattern[len(pattern)-1:] + pattern[0:len(pattern)-1]
+			playingPattern.SetText(pattern)
+		}
+	})
+	invertRightButton.Disable()
+
+	invertLeftButton = widget.NewButton("Invert Left", func() {
 		if pattern != "" {
 			pattern = pattern[1:] + pattern[0:1]
 			playingPattern.SetText(pattern)
 		}
 	})
-	invertButton.Disable()
+	invertLeftButton.Disable()
 
 	playButton = widget.NewButton("Play", func() {
-		invertButton.Disable()
+		invertLeftButton.Disable()
+		invertRightButton.Disable()
 		playButton.Disable()
 		stopButton.Enable()
 		args[0] = steps.Text
@@ -134,8 +146,9 @@ func main() {
 			}()
 		}
 	})
-
-	content := container.NewVBox(steps, beats, bpmInput, playButton, stopButton, invertButton, algCheckbox, fillCheckbox, playing, bar, playingPattern)
+	playStopButtonRow := container.NewVBox(playButton, stopButton)
+	invertButtonRow := container.NewHBox(invertLeftButton, invertRightButton)
+	content := container.NewVBox(steps, beats, bpmInput, playStopButtonRow, invertButtonRow, algCheckbox, fillCheckbox, playing, bar, playingPattern)
 	window.SetContent(content)
 	window.ShowAndRun()
 }
