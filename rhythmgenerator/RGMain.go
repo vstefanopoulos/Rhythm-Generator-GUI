@@ -7,7 +7,7 @@ const fill = 'x'
 var InputError string
 var InputErrorSolution string
 
-func RGMain(args []string) (string, string, int) {
+func callGenerators(args []string) (string, string, int) {
 	var pattern string
 	steps, beats, bpm := checkInput(args)
 	var algType = args[3]
@@ -29,7 +29,6 @@ func RGMain(args []string) (string, string, int) {
 			algType += " Asymetrical "
 		}
 	}
-
 	if steps/beats > 1 && args[4] == "fill" {
 		filledPattern := fillSteps(pattern)
 		algType += " Filled"
