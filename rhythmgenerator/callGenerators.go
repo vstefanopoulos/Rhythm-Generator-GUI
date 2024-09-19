@@ -4,7 +4,7 @@ const onSet = 'X'
 const offSet = 'o'
 const fill = 'x'
 
-func callGenerators(stepsInput, beatsInput, bpmInput, algType string, fill bool) (string, int) {
+func callGenerators(stepsInput, beatsInput, bpmInput, algType string, fill, removerSymetry bool) (string, int) {
 	var pattern string
 	steps, beats, bpm := convertInput(stepsInput, beatsInput, bpmInput)
 
@@ -18,11 +18,10 @@ func callGenerators(stepsInput, beatsInput, bpmInput, algType string, fill bool)
 	} else {
 		pattern = customGenerate(steps, beats)
 	}
-	if steps > 2 && beats > 3 && steps%beats != 0 {
+	if removerSymetry && steps > 2 && beats > 3 && steps%beats != 0 {
 		newPattern, isSymetrical := removeSymetry(pattern, steps)
 		if isSymetrical {
 			pattern = newPattern
-			algType += " Asymetrical "
 		}
 	}
 	if steps/beats > 1 && fill {

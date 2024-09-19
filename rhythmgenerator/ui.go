@@ -37,6 +37,15 @@ func Ui() {
 		}
 	})
 
+	var removerSymetry bool
+	removerSymetryCheckbox := widget.NewCheck("Remove Symetry", func(value bool) {
+		if value {
+			removerSymetry = true
+		} else {
+			removerSymetry = false
+		}
+	})
+
 	steps := widget.NewEntry()
 	steps.SetPlaceHolder("Steps")
 
@@ -74,7 +83,7 @@ func Ui() {
 		updateButtonStates(true, playButton, stopButton, invertLeftButton, invertRightButton, bar)
 
 		if pattern == "" || !inverted {
-			pattern, bpm = callGenerators(steps.Text, beats.Text, bpmInput.Text, algType, fill)
+			pattern, bpm = callGenerators(steps.Text, beats.Text, bpmInput.Text, algType, fill, removerSymetry)
 		}
 		inverted = false
 
@@ -86,7 +95,7 @@ func Ui() {
 	})
 
 	invertButtonRow := container.NewHBox(invertLeftButton, invertRightButton)
-	checkBoxesRow := container.NewHBox(algCheckbox, fillCheckbox)
+	checkBoxesRow := container.NewHBox(algCheckbox, fillCheckbox, removerSymetryCheckbox)
 	infoBarRow := container.NewHBox(patternInfo, bar)
 
 	content := container.NewVBox(steps, beats, bpmInput, playButton, stopButton, invertButtonRow, checkBoxesRow, infoBarRow, genPattern)
