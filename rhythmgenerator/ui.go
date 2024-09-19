@@ -8,11 +8,12 @@ import (
 )
 
 func Ui() {
-
-	args := make([]string, 5)
 	var pattern string
-	var T string
 	var bpm int
+	var playButton *widget.Button
+	var stopButton *widget.Button
+	var invertRightButton *widget.Button
+	var invertLeftButton *widget.Button
 
 	RGgui := app.New()
 	window := RGgui.NewWindow("Rhythm Generator")
@@ -27,12 +28,12 @@ func Ui() {
 		}
 	})
 
-	var fill string
+	var fill bool
 	fillCheckbox := widget.NewCheck("Fill Steps", func(value bool) {
 		if value {
-			fill = "fill"
+			fill = true
 		} else {
-			fill = ""
+			fill = false
 		}
 	})
 
@@ -51,13 +52,8 @@ func Ui() {
 
 	genPattern := widget.NewLabel("")
 
-	var playButton *widget.Button
-	var stopButton *widget.Button
-	var invertRightButton *widget.Button
-	var invertLeftButton *widget.Button
-
 	stopButton = widget.NewButton("Stop", func() {
-		Stop()
+		stop()
 		updateButtonStates(false, playButton, stopButton, invertLeftButton, invertRightButton, bar)
 
 	})
@@ -65,33 +61,27 @@ func Ui() {
 
 	var inverted bool
 	invertRightButton = widget.NewButton("Invert Right", func() {
-		invertPattern(pattern, &inverted, genPattern, true)
+		pattern = invertPattern(pattern, &inverted, genPattern, true)
 	})
 	invertRightButton.Disable()
 
 	invertLeftButton = widget.NewButton("Invert Left", func() {
-		invertPattern(pattern, &inverted, genPattern, false)
+		pattern = invertPattern(pattern, &inverted, genPattern, false)
 	})
 	invertLeftButton.Disable()
 
 	playButton = widget.NewButton("Play", func() {
 		updateButtonStates(true, playButton, stopButton, invertLeftButton, invertRightButton, bar)
 
-		args[0] = steps.Text
-		args[1] = beats.Text
-		args[2] = bpmInput.Text
-		args[3] = algType
-		args[4] = fill
-
 		if pattern == "" || !inverted {
-			pattern, T, bpm = callGenerators(args)
+			pattern, bpm = callGenerators(steps.Text, beats.Text, bpmInput.Text, algType, fill)
 		}
 		inverted = false
 
 		if handleInputErrors(bar, patternInfo, playButton, stopButton) {
 			return
 		}
-		go Play(pattern, bpm, bar, T, patternInfo, genPattern)
+		go play(pattern, bpm, bar, algType, patternInfo, genPattern)
 
 	})
 

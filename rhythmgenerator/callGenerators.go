@@ -4,17 +4,13 @@ const onSet = 'X'
 const offSet = 'o'
 const fill = 'x'
 
-var InputError string
-var InputErrorSolution string
-
-func callGenerators(args []string) (string, string, int) {
+func callGenerators(stepsInput, beatsInput, bpmInput, algType string, fill bool) (string, int) {
 	var pattern string
-	steps, beats, bpm := checkInput(args)
-	var algType = args[3]
+	steps, beats, bpm := convertInput(stepsInput, beatsInput, bpmInput)
 
 	// if err check input returns 0, 0
 	if steps == 0 || beats == 0 {
-		return "", "", 0
+		return "", 0
 	}
 
 	if algType == "Euclidean" {
@@ -29,10 +25,10 @@ func callGenerators(args []string) (string, string, int) {
 			algType += " Asymetrical "
 		}
 	}
-	if steps/beats > 1 && args[4] == "fill" {
+	if steps/beats > 1 && fill {
 		filledPattern := fillSteps(pattern)
 		algType += " Filled"
-		return filledPattern, algType, bpm
+		return filledPattern, bpm
 	}
-	return pattern, algType, bpm
+	return pattern, bpm
 }

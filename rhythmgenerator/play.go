@@ -16,12 +16,12 @@ const off = "./wav/hh.wav"
 var stopPlayChan = make(chan struct{})
 var stopPlayPatternChan = make(chan struct{})
 
-func Play(pattern string, bpm int, bar *widget.Label, T string, genPattern, patternInfo *widget.Label) {
+func play(pattern string, bpm int, bar *widget.Label, algType string, genPattern, patternInfo *widget.Label) {
 	if pattern == "" {
 		return
 	}
 
-	patternInfo.SetText(fmt.Sprintf("Pattern: %v Algorithm", T))
+	patternInfo.SetText(fmt.Sprintf("Pattern: %v Algorithm", algType))
 	genPattern.SetText(pattern)
 
 	var barCount int = 1
@@ -51,7 +51,7 @@ func Play(pattern string, bpm int, bar *widget.Label, T string, genPattern, patt
 
 }
 
-func Stop() {
+func stop() {
 	go func() {
 		stopPlayChan <- struct{}{}
 	}()
