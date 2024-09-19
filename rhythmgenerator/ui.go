@@ -46,11 +46,11 @@ func Ui() {
 		}
 	})
 
-	steps := widget.NewEntry()
-	steps.SetPlaceHolder("Steps")
+	stepsInput := widget.NewEntry()
+	stepsInput.SetPlaceHolder("Steps")
 
-	beats := widget.NewEntry()
-	beats.SetPlaceHolder("Beats")
+	beatsInput := widget.NewEntry()
+	beatsInput.SetPlaceHolder("Beats")
 
 	bpmInput := widget.NewEntry()
 	bpmInput.SetPlaceHolder("BPM")
@@ -60,13 +60,6 @@ func Ui() {
 	bar := widget.NewLabel("")
 
 	genPattern := widget.NewLabel("")
-
-	stopButton = widget.NewButton("Stop", func() {
-		stop()
-		updateButtonStates(false, playButton, stopButton, invertLeftButton, invertRightButton, bar)
-
-	})
-	stopButton.Disable()
 
 	var inverted bool
 	invertRightButton = widget.NewButton("Invert Right", func() {
@@ -83,22 +76,30 @@ func Ui() {
 		updateButtonStates(true, playButton, stopButton, invertLeftButton, invertRightButton, bar)
 
 		if pattern == "" || !inverted {
-			pattern, bpm = callGenerators(steps.Text, beats.Text, bpmInput.Text, algType, fill, removerSymetry)
+			pattern, bpm = callGenerators(stepsInput.Text, beatsInput.Text, bpmInput.Text, algType, fill, removerSymetry)
 		}
 		inverted = false
 
 		if handleInputErrors(bar, patternInfo, playButton, stopButton) {
 			return
 		}
-		go play(pattern, bpm, bar, algType, patternInfo, genPattern)
-
+		go play(pattern, bpm, bar, algType, genPattern, patternInfo)
 	})
 
+	stopButton = widget.NewButton("Stop", func() {
+		stop()
+		updateButtonStates(false, playButton, stopButton, invertLeftButton, invertRightButton, bar)
+
+	})
+	stopButton.Disable()
+
+	inputBoxCol := container.NewVBox(stepsInput, beatsInput, bpmInput)
+	playStopCol := container.NewVBox(playButton, stopButton)
 	invertButtonRow := container.NewHBox(invertLeftButton, invertRightButton)
 	checkBoxesRow := container.NewHBox(algCheckbox, fillCheckbox, removerSymetryCheckbox)
-	infoBarRow := container.NewHBox(patternInfo, bar)
+	infoBarRow := container.NewHBox(genPattern, bar)
 
-	content := container.NewVBox(steps, beats, bpmInput, playButton, stopButton, invertButtonRow, checkBoxesRow, infoBarRow, genPattern)
+	content := container.NewVBox(inputBoxCol, playStopCol, invertButtonRow, checkBoxesRow, patternInfo, infoBarRow)
 	window.SetContent(content)
 	window.ShowAndRun()
 }
