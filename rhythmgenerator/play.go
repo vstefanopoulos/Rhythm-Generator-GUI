@@ -24,7 +24,7 @@ func play(pattern string, bpm int, bar *widget.Label, algType string, genPattern
 	patternInfo.SetText(fmt.Sprintf("Pattern: %v Algorithm", algType))
 	genPattern.SetText(pattern)
 
-	var barCount int = 1
+	var barCount int
 	var wg sync.WaitGroup
 	for {
 		select {
