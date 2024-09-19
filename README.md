@@ -32,7 +32,7 @@ By default the algorithm for pattern generation is Euclidean Rhythm. You can cha
 
 ### Fill steps:  
 
-Tick the fill steps box to fill an sparse beats populated pattern or to add more movement to any pattern. In most cases the number of beats are more than the selected ones.
+Tick the fill steps box to add more movement to any pattern. In most cases the number of beats are more than the selected ones.
 
 ## **Compatibility**
 
@@ -56,6 +56,6 @@ Run the terminal command `$go run main.go`
 
 1. Run `$chmod +x build.sh`
 2. Run `$./build.sh`
-3. Run `$./main.bin`. 
+3. Run `$./main.bin` 
 
 NOTE: When building or run in go enviroment the message `$ld: warning: ignoring duplicate libraries: '-lobjc'` might pop up in terminal. To my knowledge this doesn't affect the program's functionality
