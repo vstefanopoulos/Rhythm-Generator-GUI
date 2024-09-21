@@ -53,7 +53,7 @@ The `Remove Symetry` option breaks the symmetry of a pattern by inverting the la
 ## **Compatibility**
 
 - macOS 10.15 Catalina or later
-- Go v1.22.2
+- Go v1.23.1
 
 ## **Installation**
 
@@ -61,7 +61,7 @@ You can run the program in a go enviroment or build using the `build.sh` file pr
 In any case first follow these steps:
 
 1. Clone repository https://github.com/vstefanopoulos/rhythm-generator.git
-2. Make sure you have go 1.22.2 version or later installed on your machine 
+2. Make sure you have go 1.23.1 version or later installed on your machine 
 3. Open terminal at repo folder
 
 ### **Instructions for Go enviroment**
@@ -70,8 +70,14 @@ Run the terminal command `$go run main.go`
 
 ### **Instructions for building executable**
 
-1. Run `$chmod +x build.sh`
+1. `$chmod +x build.sh`
 2. Run `$./build.sh`
 3. Run `$./main.bin` 
+
+CAUTION: Build will remove the source files from your folder. If you want to keep the source files follow these instructions
+
+1. `$go build -o rhythmgenerator.bin ./rhythmgenerator/*.go`
+2. `$go build -o main.bin ./main.go`
+3. Run `$./main.bin`
 
 NOTE: When building or run in go enviroment the message `$ld: warning: ignoring duplicate libraries: '-lobjc'` might pop up in terminal. To my knowledge this doesn't affect the program's functionality
