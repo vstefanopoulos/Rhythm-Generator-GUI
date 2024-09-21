@@ -1,13 +1,14 @@
-// fillSteps adds a lower case 'x' on every "Xoo" block
+// newPattern adds a lower case 'x' on every "Xoo" block
 // if there is a pattern of "Xooo" or more 'o's it calls
 // Euclidean on this block and all 'x's but the first
 // a lower case 'x'
 
 package rhythmgenerator
 
-func fillSteps(pattern string) string {
-	var fillSteps string
+func fillSteps(pattern string) (string, bool) {
+	var newPattern string
 	var count int
+	var filledSteps bool
 	parts := []int{}
 
 	for i, j := range pattern {
@@ -25,19 +26,21 @@ func fillSteps(pattern string) string {
 	for _, j := range parts {
 
 		if j == 2 {
-			fillSteps += string(onSet) + string(offSet)
+			newPattern += string(onSet) + string(offSet)
 		} else if j == 3 {
-			fillSteps += string(onSet) + string(offSet) + string(fill)
+			newPattern += string(onSet) + string(offSet) + string(fill)
+			filledSteps = true
 		} else {
 			part := euclideanGenerate(j, j/2)
 			for i, char := range part {
 				if i != 0 && char == 'X' {
-					fillSteps += "x"
+					newPattern += "x"
 				} else {
-					fillSteps += string(char)
+					newPattern += string(char)
 				}
 			}
+			filledSteps = true
 		}
 	}
-	return fillSteps
+	return newPattern, filledSteps
 }

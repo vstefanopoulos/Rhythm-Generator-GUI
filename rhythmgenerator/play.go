@@ -37,7 +37,7 @@ func play(pattern string, bpm int, w *widgets) {
 
 			go func() {
 				defer wg.Done()
-				playPattern(pattern, bpm)
+				playPattern(pattern, bpm, w.playFillsCheckbox.Checked, w.playOffsetsCheckbox.Checked)
 			}()
 
 			wg.Wait()
@@ -63,7 +63,7 @@ func playSound(sound string) {
 	}
 }
 
-func playPattern(pattern string, bpm int) {
+func playPattern(pattern string, bpm int, playFills, playOffset bool) {
 	durationPerBeat := time.Duration(60000/bpm) * time.Millisecond
 
 	for _, char := range pattern {
@@ -75,9 +75,21 @@ func playPattern(pattern string, bpm int) {
 			case 'X':
 				go playSound(on)
 			case 'x':
-				go playSound(filler)
+				if playFills {
+					go playSound(filler)
+				} else {
+					time.Sleep(durationPerBeat)
+					continue
+				}
+
 			case 'o':
-				go playSound(off)
+				if playOffset {
+					go playSound(off)
+				} else {
+					time.Sleep(durationPerBeat)
+					continue
+				}
+
 			}
 			time.Sleep(durationPerBeat)
 		}
