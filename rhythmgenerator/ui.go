@@ -7,99 +7,100 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+type widgets struct {
+	stepsInput            *widget.Entry
+	beatsInput            *widget.Entry
+	bpmInput              *widget.Entry
+	playButton            *widget.Button
+	stopButton            *widget.Button
+	invertRightButton     *widget.Button
+	invertLeftButton      *widget.Button
+	inversionStatusLabel  *widget.Label
+	bar                   *widget.Label
+	genPattern            *widget.Label
+	algCheckbox           *widget.Check
+	fillCheckbox          *widget.Check
+	removeSymetryCheckbox *widget.Check
+	inversionStatus       int
+}
+
+type prev struct {
+	stepsInput            string
+	beatsInput            string
+	bpmInput              string
+	algCheckBox           bool
+	fillCheckbox          bool
+	removeSymetryCheckbox bool
+}
+
 func Ui() {
 	var pattern string
 	var bpm int
-	var playButton *widget.Button
-	var stopButton *widget.Button
-	var invertRightButton *widget.Button
-	var invertLeftButton *widget.Button
+	w := &widgets{}
+	prev := &prev{}
 
 	RGgui := app.New()
 	window := RGgui.NewWindow("Rhythm Generator")
 	window.Resize(fyne.NewSize(400, 300))
 
-	var algType string = "Euclidean"
-	algCheckbox := widget.NewCheck("Custom Algorithm", func(value bool) {
-		if value {
-			algType = "Custom"
-		} else {
-			algType = "Euclidean"
+	w.stepsInput = widget.NewEntry()
+	w.stepsInput.SetPlaceHolder("Steps")
+
+	w.beatsInput = widget.NewEntry()
+	w.beatsInput.SetPlaceHolder("Beats")
+
+	w.bpmInput = widget.NewEntry()
+	w.bpmInput.SetPlaceHolder("BPM")
+
+	w.algCheckbox = widget.NewCheck("Custom Algorithm", func(value bool) {})
+
+	w.fillCheckbox = widget.NewCheck("Fill Steps", func(value bool) {})
+
+	w.removeSymetryCheckbox = widget.NewCheck("Remove Symetry", func(value bool) {})
+
+	w.inversionStatusLabel = widget.NewLabel("")
+
+	w.bar = widget.NewLabel("")
+
+	w.genPattern = widget.NewLabel("")
+
+	w.invertRightButton = widget.NewButton("Invert Right", func() {
+		pattern = invertPattern(pattern, w, true)
+	})
+
+	w.invertLeftButton = widget.NewButton("Invert Left", func() {
+		pattern = invertPattern(pattern, w, false)
+	})
+
+	w.playButton = widget.NewButton("Play", func() {
+		updateButtonStates(true, w)
+		if pattern == "" || changedInput(w, prev) {
+			var e *Error
+			pattern, bpm, e = callGenerators(w, prev)
+			if e != nil {
+				e.handleInputErrors(w)
+				return
+			}
+			updatePrev(w, prev)
 		}
+		w.genPattern.SetText(pattern)
+		go play(pattern, bpm, w)
 	})
 
-	var fill bool
-	fillCheckbox := widget.NewCheck("Fill Steps", func(value bool) {
-		if value {
-			fill = true
-		} else {
-			fill = false
-		}
-	})
-
-	var removerSymetry bool
-	removerSymetryCheckbox := widget.NewCheck("Remove Symetry", func(value bool) {
-		if value {
-			removerSymetry = true
-		} else {
-			removerSymetry = false
-		}
-	})
-
-	stepsInput := widget.NewEntry()
-	stepsInput.SetPlaceHolder("Steps")
-
-	beatsInput := widget.NewEntry()
-	beatsInput.SetPlaceHolder("Beats")
-
-	bpmInput := widget.NewEntry()
-	bpmInput.SetPlaceHolder("BPM")
-
-	patternInfo := widget.NewLabel("")
-
-	bar := widget.NewLabel("")
-
-	genPattern := widget.NewLabel("")
-
-	var inverted bool
-	invertRightButton = widget.NewButton("Invert Right", func() {
-		pattern = invertPattern(pattern, &inverted, genPattern, true)
-	})
-	invertRightButton.Disable()
-
-	invertLeftButton = widget.NewButton("Invert Left", func() {
-		pattern = invertPattern(pattern, &inverted, genPattern, false)
-	})
-	invertLeftButton.Disable()
-
-	playButton = widget.NewButton("Play", func() {
-		updateButtonStates(true, playButton, stopButton, invertLeftButton, invertRightButton, bar)
-
-		if pattern == "" || !inverted {
-			pattern, bpm = callGenerators(stepsInput.Text, beatsInput.Text, bpmInput.Text, algType, fill, removerSymetry)
-		}
-		inverted = false
-
-		if handleInputErrors(bar, patternInfo, playButton, stopButton) {
-			return
-		}
-		go play(pattern, bpm, bar, algType, genPattern, patternInfo)
-	})
-
-	stopButton = widget.NewButton("Stop", func() {
+	w.stopButton = widget.NewButton("Stop", func() {
 		stop()
-		updateButtonStates(false, playButton, stopButton, invertLeftButton, invertRightButton, bar)
+		updateButtonStates(false, w)
 
 	})
-	stopButton.Disable()
+	initialButtonState(w)
 
-	inputBoxCol := container.NewVBox(stepsInput, beatsInput, bpmInput)
-	playStopCol := container.NewVBox(playButton, stopButton)
-	invertButtonRow := container.NewHBox(invertLeftButton, invertRightButton)
-	checkBoxesRow := container.NewHBox(algCheckbox, fillCheckbox, removerSymetryCheckbox)
-	infoBarRow := container.NewHBox(genPattern, bar)
+	inputBoxCol := container.NewVBox(w.stepsInput, w.beatsInput, w.bpmInput)
+	playStopCol := container.NewVBox(w.playButton, w.stopButton)
+	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton)
+	checkBoxesRow := container.NewHBox(w.algCheckbox, w.fillCheckbox, w.removeSymetryCheckbox)
+	PatBarRow := container.NewHBox(w.genPattern, w.bar)
 
-	content := container.NewVBox(inputBoxCol, playStopCol, invertButtonRow, checkBoxesRow, patternInfo, infoBarRow)
+	content := container.NewVBox(inputBoxCol, playStopCol, invertButtonRow, checkBoxesRow, w.inversionStatusLabel, PatBarRow)
 	window.SetContent(content)
 	window.ShowAndRun()
 }

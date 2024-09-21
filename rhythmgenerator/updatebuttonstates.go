@@ -1,18 +1,27 @@
 package rhythmgenerator
 
-import "fyne.io/fyne/v2/widget"
+import "fmt"
 
-func updateButtonStates(isPlaying bool, playButton, stopButton, invertLeftButton, invertRightButton *widget.Button, bar *widget.Label) {
+func updateButtonStates(isPlaying bool, w *widgets) {
 	if isPlaying {
-		invertLeftButton.Disable()
-		invertRightButton.Disable()
-		playButton.Disable()
-		stopButton.Enable()
+		w.invertLeftButton.Disable()
+		w.invertRightButton.Disable()
+		w.playButton.Disable()
+		w.stopButton.Enable()
+		w.inversionStatusLabel.SetText(fmt.Sprintf("Inversion Status: %v", w.inversionStatus))
 	} else {
-		playButton.Enable()
-		invertLeftButton.Enable()
-		invertRightButton.Enable()
-		stopButton.Disable()
-		bar.SetText("Stopped")
+		w.playButton.Enable()
+		w.invertLeftButton.Enable()
+		w.invertRightButton.Enable()
+		w.stopButton.Disable()
+		w.bar.SetText("Stopped")
 	}
+
+}
+
+func initialButtonState(w *widgets) {
+	w.invertLeftButton.Disable()
+	w.invertRightButton.Disable()
+	w.playButton.Enable()
+	w.stopButton.Disable()
 }

@@ -5,8 +5,6 @@ import (
 	"os/exec"
 	"sync"
 	"time"
-
-	"fyne.io/fyne/v2/widget"
 )
 
 const on = "./wav/rim.wav"
@@ -16,13 +14,10 @@ const off = "./wav/hh.wav"
 var stopPlayChan = make(chan struct{})
 var stopPlayPatternChan = make(chan struct{})
 
-func play(pattern string, bpm int, bar *widget.Label, algType string, genPattern, patternInfo *widget.Label) {
+func play(pattern string, bpm int, w *widgets) {
 	if pattern == "" {
 		return
 	}
-
-	patternInfo.SetText(fmt.Sprintf("Pattern: %v Algorithm", algType))
-	genPattern.SetText(pattern)
 
 	var barCount int
 	var wg sync.WaitGroup
@@ -37,7 +32,7 @@ func play(pattern string, bpm int, bar *widget.Label, algType string, genPattern
 
 			go func() {
 				defer wg.Done()
-				bar.SetText(fmt.Sprintf("Bar: %v", barCount))
+				w.bar.SetText(fmt.Sprintf("Bar: %v", barCount))
 			}()
 
 			go func() {

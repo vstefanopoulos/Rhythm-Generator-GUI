@@ -1,20 +1,16 @@
 package rhythmgenerator
 
-import "fyne.io/fyne/v2/widget"
+type Error struct {
+	Message  string
+	Solution string
+}
 
-var InputError string
-var InputErrorSolution string
-
-func handleInputErrors(bar, patternInfo *widget.Label, playButton, stopButton *widget.Button) bool {
-	if InputError != "" {
-		patternInfo.SetText(InputError)
-		if InputErrorSolution != "" {
-			bar.SetText(InputErrorSolution)
+func (err *Error) handleInputErrors(w *widgets) {
+	if err != nil {
+		w.inversionStatusLabel.SetText(err.Message)
+		if err.Solution != "" {
+			w.genPattern.SetText(err.Solution)
 		}
-		playButton.Enable()
-		stopButton.Disable()
-		return true
-	} else {
-		return false
+		initialButtonState(w)
 	}
 }
