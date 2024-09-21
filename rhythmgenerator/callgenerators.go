@@ -33,6 +33,7 @@ func callGenerators(w *widgets) (string, int, *Error) {
 		if filledSteps {
 			pattern = newPattern
 			w.playFillsCheckbox.Enable()
+			w.playFillsCheckbox.SetChecked(true)
 		} else {
 			w.playFillsCheckbox.SetChecked(false)
 			w.fillCheckbox.SetChecked(false)
