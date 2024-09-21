@@ -19,10 +19,12 @@ func callGenerators(w *widgets) (string, int, *Error) {
 		pattern = euclideanGenerate(steps, beats)
 	}
 
-	if w.removeSymetryCheckbox.Checked && steps > 9 && beats > 3 && steps%beats != 0 {
-		newPattern, isSymetrical := removeSymetry(pattern, steps)
-		if isSymetrical {
+	if w.removeSymetryCheckbox.Checked {
+		newPattern, generatedAsymetrical := removeSymetry(pattern, steps, beats)
+		if generatedAsymetrical {
 			pattern = newPattern
+		} else {
+			w.removeSymetryCheckbox.SetChecked(false)
 		}
 	}
 
@@ -33,7 +35,7 @@ func callGenerators(w *widgets) (string, int, *Error) {
 			w.playFillsCheckbox.Enable()
 		} else {
 			w.playFillsCheckbox.SetChecked(false)
-			w.playFillsCheckbox.Disable()
+			w.fillCheckbox.SetChecked(false)
 		}
 	}
 	return pattern, bpm, nil

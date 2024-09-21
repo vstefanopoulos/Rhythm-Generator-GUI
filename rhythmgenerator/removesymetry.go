@@ -4,18 +4,18 @@
 
 package rhythmgenerator
 
-import "reflect"
+import (
+	"reflect"
+)
 
 var primes = []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97}
 
-func removeSymetry(pattern string, steps int) (string, bool) {
-	isPrime := isPrime(steps)
-
-	if isPrime {
+func removeSymetry(pattern string, steps, beats int) (string, bool) {
+	if isPrime := isPrime(steps); steps%beats == 0 || isPrime || steps < 9 || beats < 3 {
 		return "", false
 	}
 
-	var symetry int
+	var symetryAxis int
 	for _, i := range primes {
 
 		if steps%i == 0 {
@@ -27,12 +27,12 @@ func removeSymetry(pattern string, steps int) (string, bool) {
 					return "", false
 				}
 			}
-			symetry = i
+			symetryAxis = i
 			break
 		}
 	}
 
-	cell := string(pattern[:steps/symetry])
+	cell := string(pattern[:steps/symetryAxis])
 	var sets [][]string
 	start := 0
 	var end int
