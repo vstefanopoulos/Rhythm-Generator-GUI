@@ -76,7 +76,7 @@ func Ui() {
 		updateButtonStates(true, w)
 		if pattern == "" || changedInput(w, prev) {
 			var e *Error
-			pattern, bpm, e = callGenerators(w, prev)
+			pattern, bpm, e = callGenerators(w)
 			if e != nil {
 				e.handleInputErrors(w)
 				return
