@@ -4,7 +4,7 @@ const onSet = 'X'
 const offSet = 'o'
 const fill = 'x'
 
-func callGenerators(w *widgets, prev *prev) (string, int, *Error) {
+func callGenerators(w *widgets) (string, int, *Error) {
 	var pattern string
 	steps, beats, bpm, err := convertInput(w)
 
