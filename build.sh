@@ -15,16 +15,24 @@ go build -o main.bin ./main.go
 
 if [ $? -eq 0 ]; then
     echo "Build completed successfully!"
-
-    echo "Deleting source files..."
-    rm -f $PACKAGE_PATH/*.go ./main.go ./go.mod ./go.sum
-    rm -rf $PACKAGE_PATH
-
-    echo "Source files deleted."
-    echo "To run the main program, use $./main.bin instead of \$go run main.go"
-    rm -- "$0" &
+    read -p "Do you want to delete source files? (y/n): " response
+    if [[ "$response" == "y" || "$responce" == "Y" ]]; then
+        echo "Deleting source files..."
+        rm -f $PACKAGE_PATH/*.go ./main.go ./go.mod ./go.sum
+        rm -rf $PACKAGE_PATH
+        echo "Source files deleted."
+        rm -- "$0" &
     
+    elif [[ "$response" == "n" || "$response" == "N" ]]; then
+        echo "Source files were not deleted."
+        exit 0
+    else
+        echo "Invalid response. Exiting without deleting files."
+        exit 1
+    fi
+
 else
     echo "Build failed. Source files remain."
+    exit 1
 fi
 

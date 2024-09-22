@@ -72,7 +72,8 @@ Run the terminal command `$go run main.go`
 
 1. `$chmod +x build.sh`
 2. Run `$./build.sh`
-3. Run `$./main.bin` 
+3. Opt to delete or keep go source files
+4. Run `$./main.bin` 
 
 CAUTION: Build will remove the source files from your folder. If you want to keep the source files follow these instructions
 
