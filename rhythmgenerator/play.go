@@ -26,6 +26,8 @@ func play(pattern string, bpm int, w *widgets) {
 	var barCount int
 
 	for {
+		barCount++
+		w.bar.SetText(fmt.Sprint(barCount))
 		for i, char := range pattern {
 			select {
 			case <-stopPlayChan:
@@ -45,8 +47,6 @@ func play(pattern string, bpm int, w *widgets) {
 				go playPattern(char, w, on, filler, off)
 			}
 		}
-		barCount++
-		w.bar.SetText(fmt.Sprint(barCount))
 	}
 }
 
