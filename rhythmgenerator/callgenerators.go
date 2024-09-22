@@ -32,11 +32,9 @@ func callGenerators(w *widgets) (string, int, *Error) {
 		newPattern, filledSteps := fillSteps(pattern)
 		if filledSteps {
 			pattern = newPattern
-			w.playFillsCheckbox.Enable()
-			w.playFillsCheckbox.SetChecked(true)
+			filledButtonState(w, true)
 		} else {
-			w.playFillsCheckbox.SetChecked(false)
-			w.fillCheckbox.SetChecked(false)
+			filledButtonState(w, false)
 		}
 	}
 	return pattern, bpm, nil

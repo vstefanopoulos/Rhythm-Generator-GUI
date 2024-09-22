@@ -36,4 +36,17 @@ func initialButtonState(w *widgets) {
 	w.doubletimeCheckbox.Enable()
 	w.playFillsCheckbox.Disable()
 	w.removeSymetryCheckbox.Enable()
+	w.playOffsetsCheckbox.SetChecked(true)
+}
+
+func filledButtonState(w *widgets, enable bool) {
+	if enable {
+		w.playFillsCheckbox.Enable()
+		w.playFillsCheckbox.SetChecked(true)
+	} else {
+		w.playFillsCheckbox.SetChecked(false)
+		w.fillCheckbox.SetChecked(false)
+		w.playFillsCheckbox.Disable()
+		w.fillCheckbox.Disable()
+	}
 }
