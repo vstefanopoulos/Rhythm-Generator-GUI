@@ -20,17 +20,29 @@ func play(pattern string, bpm int, w *widgets) {
 	on := makeBuffer("./wav/rim.wav")
 	filler := makeBuffer("./wav/side.wav")
 	off := makeBuffer("./wav/hh.wav")
+	click := makeBuffer("./wav/click.wav")
+
 	ticker := time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
 	var barCount int
 
 	for {
-		for _, char := range pattern {
+		for i, char := range pattern {
 			select {
 			case <-stopPlayChan:
 				ticker.Stop()
 				return
 			case <-ticker.C:
-				playPattern(char, w, on, filler, off)
+				go func() {
+					if w.clickCheckbox.Checked {
+						switch {
+						case w.doubletimeCheckbox.Checked && i%4 == 0:
+							playClick(click)
+						case !w.doubletimeCheckbox.Checked && i%2 == 0:
+							playClick(click)
+						}
+					}
+				}()
+				go playPattern(char, w, on, filler, off)
 			}
 		}
 		barCount++
@@ -87,4 +99,9 @@ func playPattern(char rune, w *widgets, on, filler, off *beep.Buffer) {
 			}
 		}()
 	}
+}
+
+func playClick(click *beep.Buffer) {
+	streamer := click.Streamer(0, click.Len())
+	speaker.Play(streamer)
 }

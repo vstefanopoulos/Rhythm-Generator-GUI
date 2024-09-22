@@ -23,6 +23,7 @@ type widgets struct {
 	genPattern            *widget.Label
 	algCheckbox           *widget.Check
 	fillCheckbox          *widget.Check
+	clickCheckbox         *widget.Check
 	removeSymetryCheckbox *widget.Check
 	inversionStatus       int
 }
@@ -59,6 +60,8 @@ func Ui() {
 	w.algCheckbox = widget.NewCheck("Custom Algorithm", func(value bool) {})
 
 	w.fillCheckbox = widget.NewCheck("Fill Steps", func(value bool) {})
+
+	w.clickCheckbox = widget.NewCheck("Click", func(value bool) {})
 
 	w.removeSymetryCheckbox = widget.NewCheck("Remove Symetry", func(value bool) {})
 
@@ -106,11 +109,12 @@ func Ui() {
 	inputBoxCol := container.NewVBox(w.stepsInput, w.beatsInput, w.bpmInput)
 	playStopCol := container.NewVBox(w.playButton, w.stopButton)
 	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton)
-	checkBoxesRow1 := container.NewHBox(w.doubletimeCheckbox, w.playOffsetsCheckbox, w.playFillsCheckbox)
-	checkBoxesRow2 := container.NewHBox(w.algCheckbox, w.fillCheckbox, w.removeSymetryCheckbox)
+	tempoBoxesRow := container.NewHBox(w.doubletimeCheckbox, w.clickCheckbox, w.playOffsetsCheckbox)
+	algBoxesRow := container.NewHBox(w.algCheckbox, w.removeSymetryCheckbox)
+	fillBoxesRow := container.NewHBox(w.fillCheckbox, w.playFillsCheckbox)
 	PatBarRow := container.NewHBox(w.genPattern, w.bar)
 
-	content := container.NewVBox(inputBoxCol, checkBoxesRow1, playStopCol, invertButtonRow, checkBoxesRow2, w.inversionStatusLabel, PatBarRow)
+	content := container.NewVBox(inputBoxCol, tempoBoxesRow, playStopCol, algBoxesRow, fillBoxesRow, invertButtonRow, w.inversionStatusLabel, PatBarRow)
 	window.SetContent(content)
 	window.ShowAndRun()
 }
