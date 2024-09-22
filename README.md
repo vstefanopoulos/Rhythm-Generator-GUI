@@ -16,43 +16,49 @@ Dial in the `Beats` box the appropriate integer value for the desired beats. Bea
 
 ### BPM
 
-BPM must be an integer value between 1-300. The steps are interpreted as eight notes against a quarter note pulse. This means that each BPM pulse is equal to two steps.
+BPM must be an integer value between 1-500. The steps are interpreted as eight notes against a quarter note pulse. This means that each BPM pulse is equal to two steps.
 
 ### Double Time
 
-If `Double Time` is checked the steps are interpreted as 16 notes. The threshold for bpm values in this setting is 150
+If `Double Time` is checked the steps are interpreted as 16 notes. The threshold for bpm values in this setting is 250
+
+### Click
+
+Click is in unison with the BPM unless `Double Time` is checked in which case the click is played in half time. In other words the steps are interpreted as 16 notes which is in aliment with the double time definition. Click can be turned on and off during playback.
 
 ### Play Offsets
 
-While playing you can toggle the play offsets checkbox. If not enabled the offsets are interpreted as rests while if enabled the offsets are interpreted as "ghost notes".
+The default setting for this option is on. While playing you can toggle the play offsets checkbox. If not enabled the offsets are interpreted as rests while if enabled the offsets are interpreted as closed hihats.
 
-### Play Fills
-
-If there is a filled steps pattern generated you have the option to check the `Play Fills` checkbox. If not enabled the filled steps are interpreted as rests while if enabled the offsets are interpreted as softer values. See [Play/Stop](#play-and-stop) and [Fill Steps](#fill-steps) for more info.
 
 ### Play and Stop 
 
 When you hit play you see the type of Pattern ie `Pattern: Custom Filled Algorithm`. The pattern is repeated until stop is pressed and the iteration count is indicated on the `bar` label. Below that you can see the notation of the generated pattern with `X` indicating the beats, `o` the offsets and `x` the filled steps. The `X`'s trigger a snare rimshot sound, the `o`'s trigger a closed hi hat sound and the `x`'s trigger a snare side stick sound. After the playback is stopped you can restart it by pressing play again or first change any of the parameters and then play the new pattern.
 
-### Invert Left/Right:
 
-Inverts the generated pattern one step left or right. After inverting you can audition the inverted pattern using play however if you change any other parameters (steps, beats, bpm, fill or Custom Algorithm) the pattern will be reset and any inversions need to be reapplied
 
 ### Choose Algorithm Type
 
 By default the algorithm for pattern generation is Euclidean Rhythm. You can change to Custom by ticking the `Custom Algorithm` box. 
 
-### Fill steps:  
-
-Tick the fill steps box to add more movement to any pattern. In most cases the number of beats are more than the selected ones.
-
 ### Remove Symetry
 
 The `Remove Symetry` option breaks the symmetry of a pattern by inverting the last part of the pattern. This produces more musically meaningfull results. To see that in action dial 10 Steps 4 beats in your prefered Bpm. If a non symetrical pattern is not achivable the check box will be disabled during play back and reanbled when stopped.
 
+### Fill steps:  
+
+Tick the fill steps box to add more movement to any pattern. If the fill steps function doesnt apply to the generated pattern the checkbox is automatically un checked.
+
+### Play Fills
+
+If there is a filled steps pattern generated `Play Fills` checkbox is automatically checked. If unchecked the filled steps are interpreted as rests creating some negative spave in the pattern. If enabled the offsets are interpreted as softer values (a side stick sound). See [Play/Stop](#play-and-stop) and [Fill Steps](#fill-steps) for more info.
+
+### Invert Left/Right:
+
+Inverts the generated pattern one step left or right. After inverting you can audition the inverted pattern using play however if you change any other parameters (steps, beats, bpm, fill or Custom Algorithm) the pattern will be reset and any inversions need to be reapplied.
+
 ## **Compatibility**
 
-- macOS 10.15 Catalina or later
 - Go v1.23.1
 
 ## **Installation**
@@ -75,10 +81,5 @@ Run the terminal command `$go run main.go`
 3. Opt to delete or keep go source files
 4. Run `$./main.bin` 
 
-CAUTION: Build will remove the source files from your folder. If you want to keep the source files follow these instructions
-
-1. `$go build -o rhythmgenerator.bin ./rhythmgenerator/*.go`
-2. `$go build -o main.bin ./main.go`
-3. Run `$./main.bin`
 
 NOTE: When building or run in go enviroment the message `$ld: warning: ignoring duplicate libraries: '-lobjc'` might pop up in terminal. To my knowledge this doesn't affect the program's functionality
