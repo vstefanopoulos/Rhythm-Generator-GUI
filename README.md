@@ -43,7 +43,7 @@ By default the algorithm for pattern generation is Euclidean Rhythm. You can cha
 
 ### Remove Symetry
 
-The `Remove Symetry` option breaks the symmetry of a pattern by inverting the last part of the pattern. This produces more musically meaningfull results. To see that in action dial 10 Steps 4 beats in your prefered Bpm. If a non symetrical pattern is not achivable the check box will be disabled during play back and reanbled when stopped.
+The `Remove Symetry` option breaks the symmetry of a pattern by inverting the last part of the pattern. This produces more musically meaningfull results. To see that in action dial 10 Steps 4 beats in your prefered Bpm. If a non symetrical pattern is not achivable the check box will be disabled during play back and reenabled when stopped.
 
 ### Fill steps:  
 
