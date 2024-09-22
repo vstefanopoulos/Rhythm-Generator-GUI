@@ -2,14 +2,19 @@ package rhythmgenerator
 
 import (
 	"fmt"
-	"os/exec"
+	"log"
+	"os"
 	"sync"
 	"time"
+
+	"github.com/gopxl/beep"
+	"github.com/gopxl/beep/speaker"
+	"github.com/gopxl/beep/wav"
 )
 
-const on = "./wav/rim.wav"
-const filler = "./wav/side.wav"
-const off = "./wav/hh.wav"
+// const on = "./wav/rim.wav"
+// const filler = "./wav/side.wav"
+// const off = "./wav/hh.wav"
 
 var stopPlayChan = make(chan struct{})
 var stopPlayPatternChan = make(chan struct{})
@@ -55,16 +60,31 @@ func stop() {
 	}()
 }
 
-func playSound(sound string) {
-	cmd := exec.Command("afplay", sound)
-	err := cmd.Run()
+func makeBuffer(file string) *beep.Buffer {
+	f, err := os.Open(file)
 	if err != nil {
-		fmt.Println("Error playing sound:", err)
+		log.Fatal(err)
 	}
+
+	streamer, format, err := wav.Decode(f)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/35))
+
+	buffer := beep.NewBuffer(format)
+	buffer.Append(streamer)
+	streamer.Close()
+	return buffer
 }
 
 func playPattern(pattern string, bpm int, playFills, playOffset bool) {
 	durationPerBeat := time.Duration(60000/bpm) * time.Millisecond
+
+	on := makeBuffer("./wav/rim.wav")
+	filler := makeBuffer("./wav/side.wav")
+	off := makeBuffer("./wav/hh.wav")
 
 	for _, char := range pattern {
 		select {
@@ -73,10 +93,16 @@ func playPattern(pattern string, bpm int, playFills, playOffset bool) {
 		default:
 			switch char {
 			case 'X':
-				go playSound(on)
+				go func() {
+					snr := on.Streamer(0, on.Len())
+					speaker.Play(snr)
+				}()
 			case 'x':
 				if playFills {
-					go playSound(filler)
+					go func() {
+						side := filler.Streamer(0, filler.Len())
+						speaker.Play(side)
+					}()
 				} else {
 					time.Sleep(durationPerBeat)
 					continue
@@ -84,7 +110,10 @@ func playPattern(pattern string, bpm int, playFills, playOffset bool) {
 
 			case 'o':
 				if playOffset {
-					go playSound(off)
+					go func() {
+						hh := off.Streamer(0, off.Len())
+						speaker.Play(hh)
+					}()
 				} else {
 					time.Sleep(durationPerBeat)
 					continue

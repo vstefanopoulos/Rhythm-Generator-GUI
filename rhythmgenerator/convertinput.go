@@ -40,9 +40,9 @@ func convertInput(w *widgets) (int, int, int, *Error) {
 		return 0, 0, 0, &e
 	}
 	bpm *= 2
-	if bpm > 600 {
+	if bpm > 1000 {
 		e.Message = ("Too fast for me")
-		e.Solution = ("Fastest I can go is 300bpm")
+		e.Solution = ("Fastest I can go is 500bpm")
 		return 0, 0, 0, &e
 	} else if bpm < 1 {
 		e.Message = ("Too slow")
@@ -51,9 +51,9 @@ func convertInput(w *widgets) (int, int, int, *Error) {
 	}
 	if w.doubletimeCheckbox.Checked {
 		bpm *= 2
-		if bpm > 600 {
+		if bpm > 2000 {
 			e.Message = ("Too fast for me")
-			e.Solution = ("Try slower BPM or not double time")
+			e.Solution = ("When double time the BPM limit is 250")
 			return 0, 0, 0, &e
 		}
 	}
