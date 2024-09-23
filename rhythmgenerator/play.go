@@ -13,8 +13,8 @@ import (
 
 var stopPlayChan = make(chan struct{})
 
-func play(pattern string, bpm int, w *widgets) {
-	if pattern == "" {
+func play(pattern *string, bpm int, w *widgets) {
+	if *pattern == "" {
 		return
 	}
 	on := makeBuffer("./wav/rim.wav")
@@ -28,7 +28,7 @@ func play(pattern string, bpm int, w *widgets) {
 	for {
 		barCount++
 		w.bar.SetText(fmt.Sprint(barCount))
-		for i, char := range pattern {
+		for i, char := range *pattern {
 			select {
 			case <-stopPlayChan:
 				ticker.Stop()

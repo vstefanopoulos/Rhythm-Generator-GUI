@@ -39,7 +39,8 @@ type prev struct {
 }
 
 func Ui() {
-	var pattern string
+	var s string
+	pattern := &s
 	var bpm int
 	w := &widgets{}
 	prev := &prev{}
@@ -74,15 +75,15 @@ func Ui() {
 	w.bar = widget.NewLabel("")
 
 	w.invertRightButton = widget.NewButton("Invert Right", func() {
-		pattern = invertPattern(pattern, w, true)
+		invertPattern(pattern, w, true)
 	})
 
 	w.invertLeftButton = widget.NewButton("Invert Left", func() {
-		pattern = invertPattern(pattern, w, false)
+		invertPattern(pattern, w, false)
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
-		if pattern == "" || changedInput(w, prev) {
+		if changedInput(w, prev) {
 			var e *Error
 			pattern, bpm, e = callGenerators(w)
 			if e != nil {
@@ -92,7 +93,7 @@ func Ui() {
 			updatePrev(w, prev)
 		}
 		updateButtonStatePlay(w)
-		w.genPattern.SetText(pattern)
+		w.genPattern.SetText(*pattern)
 		go play(pattern, bpm, w)
 	})
 

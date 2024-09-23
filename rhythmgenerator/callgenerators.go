@@ -4,12 +4,12 @@ const onSet = 'X'
 const offSet = 'o'
 const fill = 'x'
 
-func callGenerators(w *widgets) (string, int, *Error) {
+func callGenerators(w *widgets) (*string, int, *Error) {
 	var pattern string
 	steps, beats, bpm, err := convertInput(w)
 
 	if err != nil {
-		return "", 0, err
+		return nil, 0, err
 	}
 	w.inversionStatus = 0
 
@@ -37,5 +37,5 @@ func callGenerators(w *widgets) (string, int, *Error) {
 			filledButtonState(w, false)
 		}
 	}
-	return pattern, bpm, nil
+	return &pattern, bpm, nil
 }

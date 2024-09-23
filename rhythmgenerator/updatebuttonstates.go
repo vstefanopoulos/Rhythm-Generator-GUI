@@ -4,8 +4,8 @@ import "fmt"
 
 func updateButtonStatePlay(w *widgets) {
 
-	w.invertLeftButton.Disable()
-	w.invertRightButton.Disable()
+	w.invertLeftButton.Enable()
+	w.invertRightButton.Enable()
 	w.playButton.Disable()
 	w.stopButton.Enable()
 	w.inversionStatusLabel.SetText(fmt.Sprintf("Inversion Status: %v", w.inversionStatus))
