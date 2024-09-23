@@ -91,14 +91,14 @@ func Ui() {
 			}
 			updatePrev(w, prev)
 		}
-		updateButtonStates(true, w)
+		updateButtonStatePlay(w)
 		w.genPattern.SetText(pattern)
 		go play(pattern, bpm, w)
 	})
 
 	w.stopButton = widget.NewButton("Stop", func() {
 		stop()
-		updateButtonStates(false, w)
+		updateButtonStateStop(w)
 
 	})
 	initialButtonState(w)
