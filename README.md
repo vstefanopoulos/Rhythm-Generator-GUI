@@ -8,11 +8,11 @@ This program offers two types of algorithms to generate, print and playback patt
 
 ### Steps
 
-Dial in the `Steps` box the appropriate integer value for the desired steps
+Dial in the `Steps` box the appropriate integer value for the desired steps.
 
 ### Beats
 
-Dial in the `Beats` box the appropriate integer value for the desired beats. Beats must be a smaller integer than steps
+Dial in the `Beats` box the appropriate integer value for the desired beats. Beats must be a smaller integer than steps.
 
 ### BPM
 
@@ -20,7 +20,7 @@ BPM must be an integer value between 1-500. The steps are interpreted as eight n
 
 ### Double Time
 
-If `Double Time` is checked the steps are interpreted as 16 notes. The threshold for bpm values in this setting is 250
+If `Double Time` is checked the steps are interpreted as 16 notes. The threshold for bpm values in this setting is 250.
 
 ### Click
 
@@ -30,12 +30,9 @@ Click is in unison with the BPM unless `Double Time` is checked in which case th
 
 The default setting for this option is on. While playing you can toggle the play offsets checkbox. If not enabled the offsets are interpreted as rests while if enabled the offsets are interpreted as closed hihats.
 
-
 ### Play and Stop 
 
 When you hit play you see the type of Pattern ie `Pattern: Custom Filled Algorithm`. The pattern is repeated until stop is pressed and the iteration count is indicated on the `bar` label. Below that you can see the notation of the generated pattern with `X` indicating the beats, `o` the offsets and `x` the filled steps. The `X`'s trigger a snare rimshot sound, the `o`'s trigger a closed hi hat sound and the `x`'s trigger a snare side stick sound. After the playback is stopped you can restart it by pressing play again or first change any of the parameters and then play the new pattern.
-
-
 
 ### Choose Algorithm Type
 
@@ -55,7 +52,7 @@ If there is a filled steps pattern generated `Play Fills` checkbox is automatica
 
 ### Invert Left/Right:
 
-Inverts the generated pattern one step left or right. After inverting you can audition the inverted pattern using play however if you change any other parameters (steps, beats, bpm, fill or Custom Algorithm) the pattern will be reset and any inversions need to be reapplied.
+Inverts the generated pattern one step left or right. After inverting while playing the inversion while be played starting from the next bar. You can see the direction and invertion value as possitive integers for right and negative intergers for left.
 
 ## **Compatibility**
 
