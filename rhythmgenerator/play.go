@@ -20,6 +20,7 @@ func play(pattern *string, bpm int, w *widgets) {
 	on := makeBuffer("./wav/rim.wav")
 	filler := makeBuffer("./wav/side.wav")
 	off := makeBuffer("./wav/hh.wav")
+	clickDownBeat := makeBuffer("./wav/clickLow.wav")
 	click := makeBuffer("./wav/click.wav")
 
 	ticker := time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
@@ -37,9 +38,11 @@ func play(pattern *string, bpm int, w *widgets) {
 				go func() {
 					if w.clickCheckbox.Checked {
 						switch {
+						case i == 0:
+							playClick(clickDownBeat)
 						case w.doubletimeCheckbox.Checked && i%4 == 0:
 							playClick(click)
-						case !w.doubletimeCheckbox.Checked && i%2 == 0:
+						case i%2 == 0:
 							playClick(click)
 						}
 					}
