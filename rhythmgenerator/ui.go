@@ -39,8 +39,7 @@ type prev struct {
 }
 
 func Ui() {
-	var s string
-	pattern := &s
+	var pattern *string = new(string)
 	var bpm int
 	w := &widgets{}
 	prev := &prev{}
