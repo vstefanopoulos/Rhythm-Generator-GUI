@@ -1,8 +1,8 @@
 package rhythmgenerator
 
 import (
-	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 )
@@ -46,7 +46,9 @@ func Ui() {
 
 	RGgui := app.New()
 	window := RGgui.NewWindow("Rhythm Generator")
-	window.Resize(fyne.NewSize(400, 300))
+
+	banner := canvas.NewImageFromFile("./banner.png")
+	banner.FillMode = canvas.ImageFillOriginal
 
 	w.stepsInput = widget.NewEntry()
 	w.stepsInput.SetPlaceHolder("Steps")
@@ -57,24 +59,19 @@ func Ui() {
 	w.bpmInput = widget.NewEntry()
 	w.bpmInput.SetPlaceHolder("BPM")
 
-	w.algCheckbox = widget.NewCheck("Custom Algorithm", func(value bool) {})
-
-	w.fillCheckbox = widget.NewCheck("Fill Steps", func(value bool) {})
-
+	w.doubletimeCheckbox = widget.NewCheck("Double Time", func(value bool) {})
 	w.clickCheckbox = widget.NewCheck("Click", func(value bool) {})
+	w.playOffsetsCheckbox = widget.NewCheck("Play Offsets", func(value bool) {})
 
+	w.algCheckbox = widget.NewCheck("Custom Algorithm", func(value bool) {})
 	w.removeSymetryCheckbox = widget.NewCheck("Remove Symetry", func(value bool) {})
 
-	w.doubletimeCheckbox = widget.NewCheck("Double Time", func(value bool) {})
-
-	w.playOffsetsCheckbox = widget.NewCheck("Play Offsets", func(value bool) {})
+	w.fillCheckbox = widget.NewCheck("Fill Steps", func(value bool) {})
 	w.playFillsCheckbox = widget.NewCheck("Play Fills", func(value bool) {})
 
 	w.inversionStatusLabel = widget.NewLabel("")
-
-	w.bar = widget.NewLabel("")
-
 	w.genPattern = widget.NewLabel("")
+	w.bar = widget.NewLabel("")
 
 	w.invertRightButton = widget.NewButton("Invert Right", func() {
 		pattern = invertPattern(pattern, w, true)
@@ -85,7 +82,6 @@ func Ui() {
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
-		updateButtonStates(true, w)
 		if pattern == "" || changedInput(w, prev) {
 			var e *Error
 			pattern, bpm, e = callGenerators(w)
@@ -95,6 +91,7 @@ func Ui() {
 			}
 			updatePrev(w, prev)
 		}
+		updateButtonStates(true, w)
 		w.genPattern.SetText(pattern)
 		go play(pattern, bpm, w)
 	})
@@ -107,14 +104,15 @@ func Ui() {
 	initialButtonState(w)
 
 	inputBoxCol := container.NewVBox(w.stepsInput, w.beatsInput, w.bpmInput)
-	playStopCol := container.NewVBox(w.playButton, w.stopButton)
-	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton)
 	tempoBoxesRow := container.NewHBox(w.doubletimeCheckbox, w.clickCheckbox, w.playOffsetsCheckbox)
+	playStopCol := container.NewVBox(w.playButton, w.stopButton)
 	algBoxesRow := container.NewHBox(w.algCheckbox, w.removeSymetryCheckbox)
 	fillBoxesRow := container.NewHBox(w.fillCheckbox, w.playFillsCheckbox)
+	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton)
 	PatBarRow := container.NewHBox(w.genPattern, w.bar)
-
-	content := container.NewVBox(inputBoxCol, tempoBoxesRow, playStopCol, algBoxesRow, fillBoxesRow, invertButtonRow, w.inversionStatusLabel, PatBarRow)
+	allBoxes := container.NewVBox(banner, inputBoxCol, tempoBoxesRow, playStopCol, algBoxesRow, fillBoxesRow,
+		invertButtonRow, w.inversionStatusLabel, PatBarRow)
+	content := container.NewHBox(allBoxes)
 	window.SetContent(content)
 	window.ShowAndRun()
 }

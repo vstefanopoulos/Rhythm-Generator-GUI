@@ -41,17 +41,17 @@ When you hit play you see the type of Pattern ie `Pattern: Custom Filled Algorit
 
 By default the algorithm for pattern generation is Euclidean Rhythm. You can change to Custom by ticking the `Custom Algorithm` box. 
 
-### Remove Symetry
+### Remove Symmetry
 
-The `Remove Symetry` option breaks the symmetry of a pattern by inverting the last part of the pattern. This produces more musically meaningfull results. To see that in action dial 10 Steps 4 beats in your prefered Bpm. If a non symetrical pattern is not achivable the check box will be disabled during play back and reenabled when stopped.
+The `Remove Symmetry` option breaks the symmetry of a pattern by inverting the last part of the pattern. This produces more musically meaningful results. To see that in action dial 12 Steps 9 beats in your preferred Bpm. If a non symmetrical pattern is not achievable the check box will be disabled during play back and reenabled when stopped.
 
 ### Fill steps:  
 
-Tick the fill steps box to add more movement to any pattern. If the fill steps function doesnt apply to the generated pattern the checkbox is automatically un checked.
+Tick the fill steps box to add more movement to any pattern. If the fill steps function doesn't apply to the generated pattern the checkbox is automatically un checked.
 
 ### Play Fills
 
-If there is a filled steps pattern generated `Play Fills` checkbox is automatically checked. If unchecked the filled steps are interpreted as rests creating some negative spave in the pattern. If enabled the offsets are interpreted as softer values (a side stick sound). See [Play/Stop](#play-and-stop) and [Fill Steps](#fill-steps) for more info.
+If there is a filled steps pattern generated `Play Fills` checkbox is automatically checked. If unchecked the filled steps are interpreted as rests creating some negative space in the pattern. If enabled the offsets are interpreted as softer values (a side stick sound). See [Play/Stop](#play-and-stop) and [Fill Steps](#fill-steps) for more info.
 
 ### Invert Left/Right:
 
@@ -63,14 +63,14 @@ Inverts the generated pattern one step left or right. After inverting you can au
 
 ## **Installation**
 
-You can run the program in a go enviroment or build using the `build.sh` file provided to run as an executable.
+You can run the program in a go environment or build using the `build.sh` file provided to run as an executable.
 In any case first follow these steps:
 
 1. Clone repository https://github.com/vstefanopoulos/rhythm-generator.git
 2. Make sure you have go 1.23.1 version or later installed on your machine 
 3. Open terminal at repo folder
 
-### **Instructions for Go enviroment**
+### **Instructions for Go environment**
 
 Run the terminal command `$go run main.go`
 
@@ -82,4 +82,4 @@ Run the terminal command `$go run main.go`
 4. Run `$./main.bin` 
 
 
-NOTE: When building or run in go enviroment the message `$ld: warning: ignoring duplicate libraries: '-lobjc'` might pop up in terminal. To my knowledge this doesn't affect the program's functionality
+NOTE: When building or run in go environment the message `$ld: warning: ignoring duplicate libraries: '-lobjc'` might pop up in terminal. To my knowledge this doesn't affect the program's functionality
