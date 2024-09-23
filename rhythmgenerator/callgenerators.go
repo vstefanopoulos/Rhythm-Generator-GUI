@@ -29,13 +29,7 @@ func callGenerators(w *widgets) (*string, int, *Error) {
 	}
 
 	if steps/beats > 1 && w.fillCheckbox.Checked {
-		newPattern, filledSteps := fillSteps(pattern)
-		if filledSteps {
-			pattern = newPattern
-			filledButtonState(w, true)
-		} else {
-			filledButtonState(w, false)
-		}
+		fillSteps(w, &pattern)
 	}
 	return &pattern, bpm, nil
 }

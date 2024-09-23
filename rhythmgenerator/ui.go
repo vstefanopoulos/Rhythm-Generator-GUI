@@ -66,7 +66,16 @@ func Ui() {
 	w.algCheckbox = widget.NewCheck("Custom Algorithm", func(value bool) {})
 	w.removeSymetryCheckbox = widget.NewCheck("Remove Symetry", func(value bool) {})
 
-	w.fillCheckbox = widget.NewCheck("Fill Steps", func(value bool) {})
+	w.fillCheckbox = widget.NewCheck("Fill Steps", func(value bool) {
+		if *pattern != "" {
+			switch value {
+			case true:
+				go fillSteps(w, pattern)
+			case false:
+				go undofillSteps(w, pattern)
+			}
+		}
+	})
 	w.playFillsCheckbox = widget.NewCheck("Play Fills", func(value bool) {})
 
 	w.inversionStatusLabel = widget.NewLabel("")
@@ -74,11 +83,11 @@ func Ui() {
 	w.bar = widget.NewLabel("")
 
 	w.invertRightButton = widget.NewButton("Invert Right", func() {
-		invertPattern(pattern, w, true)
+		go invertPattern(pattern, w, true)
 	})
 
 	w.invertLeftButton = widget.NewButton("Invert Left", func() {
-		invertPattern(pattern, w, false)
+		go invertPattern(pattern, w, false)
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
