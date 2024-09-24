@@ -8,24 +8,24 @@ import (
 )
 
 type widgets struct {
-	stepsInput            *widget.Entry
-	beatsInput            *widget.Entry
-	bpmInput              *widget.Entry
-	doubletimeCheckbox    *widget.Check
-	playOffsetsCheckbox   *widget.Check
-	playFillsCheckbox     *widget.Check
-	playButton            *widget.Button
-	stopButton            *widget.Button
-	invertRightButton     *widget.Button
-	invertLeftButton      *widget.Button
-	inversionStatusLabel  *widget.Label
-	bar                   *widget.Label
-	genPattern            *widget.Label
-	algCheckbox           *widget.Check
-	fillCheckbox          *widget.Check
-	clickCheckbox         *widget.Check
-	removeSymetryCheckbox *widget.Check
-	inversionStatus       int
+	stepsInput             *widget.Entry
+	beatsInput             *widget.Entry
+	bpmInput               *widget.Entry
+	doubletimeCheckbox     *widget.Check
+	playOffsetsCheckbox    *widget.Check
+	playFillsCheckbox      *widget.Check
+	playButton             *widget.Button
+	stopButton             *widget.Button
+	invertRightButton      *widget.Button
+	invertLeftButton       *widget.Button
+	inversionStatusLabel   *widget.Label
+	bar                    *widget.Label
+	genPattern             *widget.Label
+	algCheckbox            *widget.Check
+	fillCheckbox           *widget.Check
+	clickCheckbox          *widget.Check
+	removeSymmetryCheckbox *widget.Check
+	inversionStatus        int
 }
 
 type par struct {
@@ -71,15 +71,21 @@ func Ui() {
 	w.playOffsetsCheckbox = widget.NewCheck("Play Offsets", func(value bool) {})
 
 	w.algCheckbox = widget.NewCheck("Custom Algorithm", func(value bool) {})
-	w.removeSymetryCheckbox = widget.NewCheck("Remove Symetry", func(value bool) {})
+	w.removeSymmetryCheckbox = widget.NewCheck("Remove Symetry", func(value bool) {
+		if value {
+			removeSymmetry(w, *par.pattern, par)
+		} else {
+			fallBack(w, par)
+		}
+	})
 
 	w.fillCheckbox = widget.NewCheck("Fill Steps", func(value bool) {
 		if *par.pattern != "" {
 			switch value {
 			case true:
-				go fillSteps(w, par.pattern)
+				fillSteps(w, par.pattern)
 			case false:
-				go undofillSteps(w, par.pattern)
+				undofillSteps(w, par.pattern)
 			}
 		}
 	})
@@ -90,11 +96,11 @@ func Ui() {
 	w.bar = widget.NewLabel("")
 
 	w.invertRightButton = widget.NewButton("Invert Right", func() {
-		go invertPattern(par.pattern, w, true)
+		invertPattern(par.pattern, w, true)
 	})
 
 	w.invertLeftButton = widget.NewButton("Invert Left", func() {
-		go invertPattern(par.pattern, w, false)
+		invertPattern(par.pattern, w, false)
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
@@ -122,7 +128,7 @@ func Ui() {
 	inputBoxCol := container.NewVBox(w.stepsInput, w.beatsInput, w.bpmInput)
 	tempoBoxesRow := container.NewHBox(w.doubletimeCheckbox, w.clickCheckbox, w.playOffsetsCheckbox)
 	playStopCol := container.NewVBox(w.playButton, w.stopButton)
-	algBoxesRow := container.NewHBox(w.algCheckbox, w.removeSymetryCheckbox)
+	algBoxesRow := container.NewHBox(w.algCheckbox, w.removeSymmetryCheckbox)
 	fillBoxesRow := container.NewHBox(w.fillCheckbox, w.playFillsCheckbox)
 	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton)
 	PatBarRow := container.NewHBox(w.genPattern, w.bar)

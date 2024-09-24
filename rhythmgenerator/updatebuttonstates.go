@@ -11,7 +11,6 @@ func updateButtonStatePlay(w *widgets) {
 	w.inversionStatusLabel.SetText(fmt.Sprintf("Inversion Status: %v", w.inversionStatus))
 	w.algCheckbox.Disable()
 	w.doubletimeCheckbox.Disable()
-	w.removeSymetryCheckbox.Disable()
 }
 
 func updateButtonStateStop(w *widgets) {
@@ -23,7 +22,7 @@ func updateButtonStateStop(w *widgets) {
 	w.algCheckbox.Enable()
 	w.doubletimeCheckbox.Enable()
 	w.fillCheckbox.Enable()
-	w.removeSymetryCheckbox.Enable()
+	w.removeSymmetryCheckbox.Enable()
 }
 
 func initialButtonState(w *widgets) {
@@ -34,7 +33,7 @@ func initialButtonState(w *widgets) {
 	w.algCheckbox.Enable()
 	w.doubletimeCheckbox.Enable()
 	w.playFillsCheckbox.Disable()
-	w.removeSymetryCheckbox.Enable()
+	w.removeSymmetryCheckbox.Enable()
 	w.playOffsetsCheckbox.SetChecked(true)
 }
 

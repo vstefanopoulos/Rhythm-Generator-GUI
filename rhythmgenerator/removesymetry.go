@@ -10,9 +10,19 @@ import (
 
 var primes = []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97}
 
-func removeSymetry(pattern string, steps, beats int) (string, bool) {
+func removeSymmetry(w *widgets, pattern string, par *par) {
+	steps, beats := par.steps, par.beats
 	if isPrime := isPrime(steps); steps%beats == 0 || isPrime || steps < 9 || beats < 3 {
-		return "", false
+		w.removeSymmetryCheckbox.SetChecked(false)
+		return
+	}
+
+	if w.fillCheckbox.Checked {
+		undofillSteps(w, &pattern)
+	}
+
+	if w.inversionStatus != 0 {
+		pattern = unInvertPattern(pattern, w)
 	}
 
 	var symetryAxis int
@@ -24,7 +34,8 @@ func removeSymetry(pattern string, steps, beats int) (string, bool) {
 			for j := period; j <= steps-period; j += period {
 
 				if pattern[:period] != pattern[j:j+period] {
-					return "", false
+					w.removeSymmetryCheckbox.SetChecked(false)
+					return
 				}
 			}
 			symetryAxis = i
@@ -36,6 +47,7 @@ func removeSymetry(pattern string, steps, beats int) (string, bool) {
 	var sets [][]string
 	start := 0
 	var end int
+
 	for i := 0; i < len(cell); i++ {
 		if cell[i] == onSet && i != 0 {
 			end = i
@@ -60,7 +72,36 @@ func removeSymetry(pattern string, steps, beats int) (string, bool) {
 			newPattern += string(sets[i][k])
 		}
 	}
-	return newPattern, true
+
+	if w.inversionStatus != 0 {
+		newPattern = reInvertPattern(newPattern, w)
+	}
+
+	if w.fillCheckbox.Checked {
+		fillSteps(w, &newPattern)
+	}
+	w.genPattern.SetText(newPattern)
+	par.pattern = &newPattern
+}
+
+func fallBack(w *widgets, par *par) {
+	var fallBackPattern string
+
+	if w.algCheckbox.Checked {
+		fallBackPattern = customGenerate(par.steps, par.beats)
+	} else {
+		fallBackPattern = euclideanGenerate(par.steps, par.beats)
+	}
+
+	if w.inversionStatus != 0 {
+		fallBackPattern = reInvertPattern(fallBackPattern, w)
+	}
+
+	if w.fillCheckbox.Checked {
+		fillSteps(w, &fallBackPattern)
+	}
+	w.genPattern.SetText(fallBackPattern)
+	par.pattern = &fallBackPattern
 }
 
 func isPrime(n int) bool {

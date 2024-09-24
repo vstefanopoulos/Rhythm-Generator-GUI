@@ -5,7 +5,6 @@ const offSet = 'o'
 const fill = 'x'
 
 func callGenerators(w *widgets, par *par) *Error {
-	var pattern string
 	var err *Error
 	par.steps, par.beats, par.bpm, err = convertInput(w)
 
@@ -15,23 +14,17 @@ func callGenerators(w *widgets, par *par) *Error {
 	w.inversionStatus = 0
 
 	if w.algCheckbox.Checked {
-		pattern = customGenerate(par.steps, par.beats)
+		*par.pattern = customGenerate(par.steps, par.beats)
 	} else {
-		pattern = euclideanGenerate(par.steps, par.beats)
+		*par.pattern = euclideanGenerate(par.steps, par.beats)
 	}
 
-	if w.removeSymetryCheckbox.Checked {
-		newPattern, generatedAsymetrical := removeSymetry(pattern, par.steps, par.beats)
-		if generatedAsymetrical {
-			pattern = newPattern
-		} else {
-			w.removeSymetryCheckbox.SetChecked(false)
-		}
+	if w.removeSymmetryCheckbox.Checked {
+		removeSymmetry(w, *par.pattern, par)
 	}
 
 	if par.steps/par.beats > 1 && w.fillCheckbox.Checked {
-		fillSteps(w, &pattern)
+		fillSteps(w, par.pattern)
 	}
-	par.pattern = &pattern
 	return nil
 }
