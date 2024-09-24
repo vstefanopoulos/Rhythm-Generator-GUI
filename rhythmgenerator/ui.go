@@ -76,7 +76,7 @@ func Ui() {
 			}
 		}
 	})
-	w.playFillsCheckbox = widget.NewCheck("Play Fills", func(value bool) {})
+	w.playFillsCheckbox = widget.NewCheck("Omit Fills", func(value bool) {})
 
 	w.inversionStatusLabel = widget.NewLabel("")
 	w.genPattern = widget.NewLabel("")

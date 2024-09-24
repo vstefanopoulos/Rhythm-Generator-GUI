@@ -85,7 +85,7 @@ func playPattern(char rune, w *widgets, on, filler, off *beep.Buffer) {
 		}()
 	case char == 'x':
 		go func() {
-			if w.playFillsCheckbox.Checked {
+			if !w.playFillsCheckbox.Checked {
 				side := filler.Streamer(0, filler.Len())
 				speaker.Play(side)
 			} else {

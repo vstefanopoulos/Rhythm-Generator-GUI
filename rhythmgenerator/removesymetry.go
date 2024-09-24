@@ -63,7 +63,6 @@ func removeSymetry(pattern string, steps, beats int) (string, bool) {
 	return newPattern, true
 }
 
-// if pattern len is not prime and not 1 then it is probably symetrical
 func isPrime(n int) bool {
 	for _, i := range primes {
 		if i > n {
