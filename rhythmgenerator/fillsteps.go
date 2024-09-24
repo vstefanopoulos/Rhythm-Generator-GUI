@@ -28,13 +28,15 @@ func fillSteps(w *widgets, pattern *string) {
 	}
 
 	for _, j := range parts {
-
-		if j == 2 {
+		switch {
+		case j == 1:
+			finalPattern += string(onSet)
+		case j == 2:
 			finalPattern += string(onSet) + string(offSet)
-		} else if j == 3 {
+		case j == 3:
 			finalPattern += string(onSet) + string(offSet) + string(fill)
 			filledSteps = true
-		} else {
+		case j > 3:
 			part := euclideanGenerate(j, j/2)
 			for i, char := range part {
 				if i != 0 && char == onSet {

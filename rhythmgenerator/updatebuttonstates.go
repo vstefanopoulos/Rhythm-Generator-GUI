@@ -11,6 +11,8 @@ func updateButtonStatePlay(w *widgets) {
 	w.inversionStatusLabel.SetText(fmt.Sprintf("Inversion Status: %v", w.inversionStatus))
 	w.algCheckbox.Disable()
 	w.doubletimeCheckbox.Disable()
+	w.fillCheckbox.Enable()
+	w.omitFillsCheckbox.Enable()
 }
 
 func updateButtonStateStop(w *widgets) {
@@ -22,6 +24,7 @@ func updateButtonStateStop(w *widgets) {
 	w.algCheckbox.Enable()
 	w.doubletimeCheckbox.Enable()
 	w.fillCheckbox.Enable()
+	w.omitFillsCheckbox.Enable()
 	w.removeSymmetryCheckbox.Enable()
 }
 
@@ -32,17 +35,19 @@ func initialButtonState(w *widgets) {
 	w.stopButton.Disable()
 	w.algCheckbox.Enable()
 	w.doubletimeCheckbox.Enable()
-	w.playFillsCheckbox.Disable()
+	w.omitFillsCheckbox.Disable()
+	w.fillCheckbox.Disable()
 	w.removeSymmetryCheckbox.Enable()
 	w.playOffsetsCheckbox.SetChecked(true)
 }
 
 func filledButtonState(w *widgets, enable bool) {
 	if enable {
-		w.playFillsCheckbox.Enable()
+		w.omitFillsCheckbox.Enable()
 	} else {
-		w.playFillsCheckbox.SetChecked(false)
-		w.playFillsCheckbox.Disable()
+		w.omitFillsCheckbox.SetChecked(false)
+		w.omitFillsCheckbox.Disable()
+		w.fillCheckbox.SetChecked(false)
 		w.fillCheckbox.Disable()
 	}
 }

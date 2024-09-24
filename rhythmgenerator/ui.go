@@ -13,7 +13,7 @@ type widgets struct {
 	bpmInput               *widget.Entry
 	doubletimeCheckbox     *widget.Check
 	playOffsetsCheckbox    *widget.Check
-	playFillsCheckbox      *widget.Check
+	omitFillsCheckbox      *widget.Check
 	playButton             *widget.Button
 	stopButton             *widget.Button
 	invertRightButton      *widget.Button
@@ -89,7 +89,7 @@ func Ui() {
 			}
 		}
 	})
-	w.playFillsCheckbox = widget.NewCheck("Omit Fills", func(value bool) {})
+	w.omitFillsCheckbox = widget.NewCheck("Omit Fills", func(value bool) {})
 
 	w.inversionStatusLabel = widget.NewLabel("")
 	w.genPattern = widget.NewLabel("")
@@ -129,7 +129,7 @@ func Ui() {
 	tempoBoxesRow := container.NewHBox(w.doubletimeCheckbox, w.clickCheckbox, w.playOffsetsCheckbox)
 	playStopCol := container.NewVBox(w.playButton, w.stopButton)
 	algBoxesRow := container.NewHBox(w.algCheckbox, w.removeSymmetryCheckbox)
-	fillBoxesRow := container.NewHBox(w.fillCheckbox, w.playFillsCheckbox)
+	fillBoxesRow := container.NewHBox(w.fillCheckbox, w.omitFillsCheckbox)
 	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton)
 	PatBarRow := container.NewHBox(w.genPattern, w.bar)
 	allBoxes := container.NewVBox(banner, inputBoxCol, tempoBoxesRow, playStopCol, algBoxesRow, fillBoxesRow,
