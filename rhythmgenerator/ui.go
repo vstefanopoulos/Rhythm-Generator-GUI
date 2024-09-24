@@ -28,6 +28,13 @@ type widgets struct {
 	inversionStatus       int
 }
 
+type par struct {
+	steps   int
+	beats   int
+	bpm     int
+	pattern *string
+}
+
 type prev struct {
 	stepsInput            string
 	beatsInput            string
@@ -39,10 +46,10 @@ type prev struct {
 }
 
 func Ui() {
-	var pattern *string = new(string)
-	var bpm int
 	w := &widgets{}
 	prev := &prev{}
+	par := &par{}
+	par.pattern = new(string)
 
 	RGgui := app.New()
 	window := RGgui.NewWindow("Rhythm Generator")
@@ -67,12 +74,12 @@ func Ui() {
 	w.removeSymetryCheckbox = widget.NewCheck("Remove Symetry", func(value bool) {})
 
 	w.fillCheckbox = widget.NewCheck("Fill Steps", func(value bool) {
-		if *pattern != "" {
+		if *par.pattern != "" {
 			switch value {
 			case true:
-				go fillSteps(w, pattern)
+				go fillSteps(w, par.pattern)
 			case false:
-				go undofillSteps(w, pattern)
+				go undofillSteps(w, par.pattern)
 			}
 		}
 	})
@@ -83,17 +90,17 @@ func Ui() {
 	w.bar = widget.NewLabel("")
 
 	w.invertRightButton = widget.NewButton("Invert Right", func() {
-		go invertPattern(pattern, w, true)
+		go invertPattern(par.pattern, w, true)
 	})
 
 	w.invertLeftButton = widget.NewButton("Invert Left", func() {
-		go invertPattern(pattern, w, false)
+		go invertPattern(par.pattern, w, false)
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
 		if changedInput(w, prev) {
 			var e *Error
-			pattern, bpm, e = callGenerators(w)
+			e = callGenerators(w, par)
 			if e != nil {
 				e.handleInputErrors(w)
 				return
@@ -101,8 +108,8 @@ func Ui() {
 			updatePrev(w, prev)
 		}
 		updateButtonStatePlay(w)
-		w.genPattern.SetText(*pattern)
-		go play(pattern, bpm, w)
+		w.genPattern.SetText(*par.pattern)
+		go play(par, w)
 	})
 
 	w.stopButton = widget.NewButton("Stop", func() {
