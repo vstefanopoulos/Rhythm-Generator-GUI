@@ -12,11 +12,12 @@ func callGenerators(w *widgets, par *par) *Error {
 		return err
 	}
 	w.inversionStatus = 0
-
+	par.euclidean = euclideanGenerate(par.steps, par.beats)
+	par.custom = customGenerate(par.steps, par.beats)
 	if w.algCheckbox.Checked {
-		*par.pattern = customGenerate(par.steps, par.beats)
+		*par.pattern = par.custom
 	} else {
-		*par.pattern = euclideanGenerate(par.steps, par.beats)
+		*par.pattern = par.euclidean
 	}
 
 	if w.removeSymmetryCheckbox.Checked {
@@ -27,4 +28,30 @@ func callGenerators(w *widgets, par *par) *Error {
 		fillSteps(w, par.pattern)
 	}
 	return nil
+}
+
+func chooseCustom(w *widgets, par *par) {
+	pattern := par.custom
+	pattern = reInvertPattern(pattern, w)
+	if w.removeSymmetryCheckbox.Checked {
+		removeSymmetry(w, *par.pattern, par)
+	}
+	if w.fillCheckbox.Checked {
+		fillSteps(w, &pattern)
+	}
+	w.genPattern.SetText(pattern)
+	*par.pattern = pattern
+}
+
+func chooseEuclidean(w *widgets, par *par) {
+	pattern := par.euclidean
+	pattern = reInvertPattern(pattern, w)
+	if w.removeSymmetryCheckbox.Checked {
+		removeSymmetry(w, pattern, par)
+	}
+	if w.fillCheckbox.Checked {
+		fillSteps(w, &pattern)
+	}
+	w.genPattern.SetText(pattern)
+	*par.pattern = pattern
 }

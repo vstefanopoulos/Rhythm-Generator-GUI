@@ -29,10 +29,12 @@ type widgets struct {
 }
 
 type par struct {
-	steps   int
-	beats   int
-	bpm     int
-	pattern *string
+	steps     int
+	beats     int
+	bpm       int
+	euclidean string
+	custom    string
+	pattern   *string
 }
 
 type prev struct {
@@ -70,7 +72,13 @@ func Ui() {
 	w.clickCheckbox = widget.NewCheck("Click", func(value bool) {})
 	w.playOffsetsCheckbox = widget.NewCheck("Play Offsets", func(value bool) {})
 
-	w.algCheckbox = widget.NewCheck("Custom Algorithm", func(value bool) {})
+	w.algCheckbox = widget.NewCheck("Custom Algorithm", func(value bool) {
+		if value {
+			chooseCustom(w, par)
+		} else {
+			chooseEuclidean(w, par)
+		}
+	})
 	w.removeSymmetryCheckbox = widget.NewCheck("Remove Symetry", func(value bool) {
 		if value {
 			removeSymmetry(w, *par.pattern, par)
