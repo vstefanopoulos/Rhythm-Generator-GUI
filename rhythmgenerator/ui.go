@@ -24,6 +24,7 @@ type widgets struct {
 	algCheckbox            *widget.Check
 	fillCheckbox           *widget.Check
 	clickCheckbox          *widget.Check
+	accentDownbeatCheck    *widget.Check
 	removeSymmetryCheckbox *widget.Check
 	inversionStatus        int
 }
@@ -38,13 +39,9 @@ type par struct {
 }
 
 type prev struct {
-	stepsInput            string
-	beatsInput            string
-	bpmInput              string
-	algCheckBox           bool
-	fillCheckbox          bool
-	removeSymetryCheckbox bool
-	doubletimeCheckbox    bool
+	stepsInput string
+	beatsInput string
+	bpmInput   string
 }
 
 func Ui() {
@@ -70,6 +67,7 @@ func Ui() {
 
 	w.doubletimeCheckbox = widget.NewCheck("Double Time", func(value bool) {})
 	w.clickCheckbox = widget.NewCheck("Click", func(value bool) {})
+	w.accentDownbeatCheck = widget.NewCheck("Accent DownBeat", func(value bool) {})
 	w.playOffsetsCheckbox = widget.NewCheck("Play Offsets", func(value bool) {})
 
 	w.algCheckbox = widget.NewCheck("Custom Algorithm", func(value bool) {
@@ -129,18 +127,16 @@ func Ui() {
 	w.stopButton = widget.NewButton("Stop", func() {
 		stop()
 		updateButtonStateStop(w)
-
 	})
 	initialButtonState(w)
 
 	inputBoxCol := container.NewVBox(w.stepsInput, w.beatsInput, w.bpmInput)
-	tempoBoxesRow := container.NewHBox(w.doubletimeCheckbox, w.clickCheckbox, w.playOffsetsCheckbox)
+	tempoBoxesRow := container.NewHBox(w.doubletimeCheckbox, w.clickCheckbox, w.accentDownbeatCheck, w.playOffsetsCheckbox)
 	playStopCol := container.NewVBox(w.playButton, w.stopButton)
-	algBoxesRow := container.NewHBox(w.algCheckbox, w.removeSymmetryCheckbox)
-	fillBoxesRow := container.NewHBox(w.fillCheckbox, w.omitFillsCheckbox)
+	algBoxesRow := container.NewHBox(w.algCheckbox, w.removeSymmetryCheckbox, w.fillCheckbox, w.omitFillsCheckbox)
 	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton)
 	PatBarRow := container.NewHBox(w.genPattern, w.bar)
-	allBoxes := container.NewVBox(banner, inputBoxCol, tempoBoxesRow, playStopCol, algBoxesRow, fillBoxesRow,
+	allBoxes := container.NewVBox(banner, inputBoxCol, tempoBoxesRow, playStopCol, algBoxesRow,
 		invertButtonRow, w.inversionStatusLabel, PatBarRow)
 	content := container.NewHBox(allBoxes)
 	window.SetContent(content)

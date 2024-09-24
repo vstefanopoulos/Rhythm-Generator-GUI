@@ -38,11 +38,11 @@ func play(par *par, w *widgets) {
 				go func() {
 					if w.clickCheckbox.Checked {
 						switch {
-						case i == 0:
+						case i == 0 && w.accentDownbeatCheck.Checked:
 							playClick(clickDownBeat)
 						case w.doubletimeCheckbox.Checked && i%4 == 0:
 							playClick(click)
-						case i%2 == 0:
+						case !w.doubletimeCheckbox.Checked && i%2 == 0:
 							playClick(click)
 						}
 					}
