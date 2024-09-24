@@ -15,3 +15,27 @@ func invertPattern(pattern *string, w *widgets, right bool) {
 	w.genPattern.SetText(newPattern)
 	*pattern = newPattern
 }
+
+func unInvertPattern(pattern string, w *widgets) string {
+	switch {
+	case w.inversionStatus > 0:
+		index := w.inversionStatus
+		pattern = pattern[index:] + pattern[:index]
+	case w.inversionStatus < 0:
+		index := len(pattern) + w.inversionStatus
+		pattern = pattern[index:] + pattern[:index]
+	}
+	return pattern
+}
+
+func reInvertPattern(pattern string, w *widgets) string {
+	switch {
+	case w.inversionStatus > 0:
+		index := len(pattern) - w.inversionStatus
+		pattern = pattern[index:] + pattern[:index]
+	case w.inversionStatus < 0:
+		index := -w.inversionStatus
+		pattern = pattern[index:] + pattern[:index]
+	}
+	return pattern
+}

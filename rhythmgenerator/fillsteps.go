@@ -13,14 +13,7 @@ func fillSteps(w *widgets, pattern *string) {
 	newPattern := *pattern
 
 	if w.inversionStatus != 0 {
-		switch {
-		case w.inversionStatus > 0:
-			index := w.inversionStatus
-			newPattern = newPattern[index:] + newPattern[:index]
-		case w.inversionStatus < 0:
-			index := len(newPattern) + w.inversionStatus
-			newPattern = newPattern[index:] + newPattern[:index]
-		}
+		newPattern = unInvertPattern(newPattern, w)
 	}
 
 	for i, j := range newPattern {
@@ -55,14 +48,7 @@ func fillSteps(w *widgets, pattern *string) {
 	}
 
 	if w.inversionStatus != 0 && filledSteps {
-		switch {
-		case w.inversionStatus > 0:
-			index := len(finalPattern) - w.inversionStatus
-			finalPattern = finalPattern[index:] + finalPattern[:index]
-		case w.inversionStatus < 0:
-			index := -w.inversionStatus
-			finalPattern = finalPattern[index:] + finalPattern[:index]
-		}
+		finalPattern = reInvertPattern(finalPattern, w)
 	}
 
 	if filledSteps {
