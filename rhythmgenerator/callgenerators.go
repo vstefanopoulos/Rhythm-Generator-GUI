@@ -4,54 +4,54 @@ const onSet = 'X'
 const offSet = 'o'
 const fill = 'x'
 
-func callGenerators(w *widgets, par *par) *Error {
+func callGenerators(w *Widgets, p *Parameters) *Error {
 	var err *Error
-	par.steps, par.beats, par.bpm, err = convertInput(w)
+	p.steps, p.beats, p.bpm, err = convertInput(w)
 
 	if err != nil {
 		return err
 	}
-	w.inversionStatus = 0
-	par.euclidean = euclideanGenerate(par.steps, par.beats)
-	par.custom = customGenerate(par.steps, par.beats)
+	p.inversionStatus = 0
+	p.euclidean = euclideanGenerate(p.steps, p.beats)
+	p.custom = customGenerate(p.steps, p.beats)
 	if w.algCheckbox.Checked {
-		*par.pattern = par.custom
+		*p.pattern = p.custom
 	} else {
-		*par.pattern = par.euclidean
+		*p.pattern = p.euclidean
 	}
 
 	if w.removeSymmetryCheckbox.Checked {
-		removeSymmetry(w, *par.pattern, par)
+		removeSymmetry(w, *p.pattern, p)
 	}
 
-	if par.steps/par.beats > 1 && w.fillCheckbox.Checked {
-		fillSteps(w, par.pattern)
+	if p.steps/p.beats > 1 && w.fillCheckbox.Checked {
+		fillSteps(w, p, p.pattern)
 	}
 	return nil
 }
 
-func chooseCustom(w *widgets, par *par) {
-	pattern := par.custom
-	pattern = reInvertPattern(pattern, w)
+func chooseCustom(w *Widgets, p *Parameters) {
+	pattern := p.custom
+	pattern = reInvertPattern(pattern, p)
 	if w.removeSymmetryCheckbox.Checked {
-		removeSymmetry(w, *par.pattern, par)
+		removeSymmetry(w, *p.pattern, p)
 	}
 	if w.fillCheckbox.Checked {
-		fillSteps(w, &pattern)
+		fillSteps(w, p, &pattern)
 	}
 	w.genPattern.SetText(pattern)
-	*par.pattern = pattern
+	*p.pattern = pattern
 }
 
-func chooseEuclidean(w *widgets, par *par) {
-	pattern := par.euclidean
-	pattern = reInvertPattern(pattern, w)
+func chooseEuclidean(w *Widgets, p *Parameters) {
+	pattern := p.euclidean
+	pattern = reInvertPattern(pattern, p)
 	if w.removeSymmetryCheckbox.Checked {
-		removeSymmetry(w, pattern, par)
+		removeSymmetry(w, pattern, p)
 	}
 	if w.fillCheckbox.Checked {
-		fillSteps(w, &pattern)
+		fillSteps(w, p, &pattern)
 	}
 	w.genPattern.SetText(pattern)
-	*par.pattern = pattern
+	*p.pattern = pattern
 }

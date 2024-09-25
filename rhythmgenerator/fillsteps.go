@@ -5,15 +5,15 @@
 
 package rhythmgenerator
 
-func fillSteps(w *widgets, pattern *string) {
+func fillSteps(w *Widgets, p *Parameters, pattern *string) {
 	var finalPattern string
 	var count int
 	var filledSteps bool
 	parts := []int{}
 	newPattern := *pattern
 
-	if w.inversionStatus != 0 {
-		newPattern = unInvertPattern(newPattern, w)
+	if p.inversionStatus != 0 {
+		newPattern = unInvertPattern(newPattern, p)
 	}
 
 	for i, j := range newPattern {
@@ -49,8 +49,8 @@ func fillSteps(w *widgets, pattern *string) {
 		}
 	}
 
-	if w.inversionStatus != 0 && filledSteps {
-		finalPattern = reInvertPattern(finalPattern, w)
+	if p.inversionStatus != 0 && filledSteps {
+		finalPattern = reInvertPattern(finalPattern, p)
 	}
 
 	if filledSteps {
@@ -62,7 +62,7 @@ func fillSteps(w *widgets, pattern *string) {
 	}
 }
 
-func undofillSteps(w *widgets, pattern *string) {
+func undofillSteps(w *Widgets, pattern *string) {
 	var filledPattern string = *pattern
 	var newPattern string
 	for _, char := range filledPattern {

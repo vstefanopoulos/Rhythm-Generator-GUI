@@ -10,8 +10,8 @@ import (
 
 var primes = []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97}
 
-func removeSymmetry(w *widgets, pattern string, par *par) {
-	steps, beats := par.steps, par.beats
+func removeSymmetry(w *Widgets, pattern string, p *Parameters) {
+	steps, beats := p.steps, p.beats
 	if isPrime := isPrime(steps); steps%beats == 0 || isPrime || steps < 9 || beats < 3 {
 		w.removeSymmetryCheckbox.SetChecked(false)
 		return
@@ -21,8 +21,8 @@ func removeSymmetry(w *widgets, pattern string, par *par) {
 		undofillSteps(w, &pattern)
 	}
 
-	if w.inversionStatus != 0 {
-		pattern = unInvertPattern(pattern, w)
+	if p.inversionStatus != 0 {
+		pattern = unInvertPattern(pattern, p)
 	}
 
 	var symetryAxis int
@@ -73,35 +73,35 @@ func removeSymmetry(w *widgets, pattern string, par *par) {
 		}
 	}
 
-	if w.inversionStatus != 0 {
-		newPattern = reInvertPattern(newPattern, w)
+	if p.inversionStatus != 0 {
+		newPattern = reInvertPattern(newPattern, p)
 	}
 
 	if w.fillCheckbox.Checked {
-		fillSteps(w, &newPattern)
+		fillSteps(w, p, &newPattern)
 	}
 	w.genPattern.SetText(newPattern)
-	par.pattern = &newPattern
+	p.pattern = &newPattern
 }
 
-func fallBack(w *widgets, par *par) {
+func fallBack(w *Widgets, p *Parameters) {
 	var fallBackPattern string
 
 	if w.algCheckbox.Checked {
-		fallBackPattern = customGenerate(par.steps, par.beats)
+		fallBackPattern = customGenerate(p.steps, p.beats)
 	} else {
-		fallBackPattern = euclideanGenerate(par.steps, par.beats)
+		fallBackPattern = euclideanGenerate(p.steps, p.beats)
 	}
 
-	if w.inversionStatus != 0 {
-		fallBackPattern = reInvertPattern(fallBackPattern, w)
+	if p.inversionStatus != 0 {
+		fallBackPattern = reInvertPattern(fallBackPattern, p)
 	}
 
 	if w.fillCheckbox.Checked {
-		fillSteps(w, &fallBackPattern)
+		fillSteps(w, p, &fallBackPattern)
 	}
 	w.genPattern.SetText(fallBackPattern)
-	par.pattern = &fallBackPattern
+	p.pattern = &fallBackPattern
 }
 
 func isPrime(n int) bool {

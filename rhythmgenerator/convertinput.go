@@ -2,7 +2,7 @@ package rhythmgenerator
 
 import "strconv"
 
-func convertInput(w *widgets) (int, int, int, *Error) {
+func convertInput(w *Widgets) (int, int, int, *Error) {
 	e := Error{}
 	steps, err := strconv.Atoi(w.stepsInput.Text)
 	if err != nil {
@@ -50,7 +50,6 @@ func convertInput(w *widgets) (int, int, int, *Error) {
 		return 0, 0, 0, &e
 	}
 	if w.doubletimeCheckbox.Checked {
-		bpm *= 2
 		if bpm > 2000 {
 			e.Message = ("Too fast for me")
 			e.Solution = ("When double time the BPM limit is 250")

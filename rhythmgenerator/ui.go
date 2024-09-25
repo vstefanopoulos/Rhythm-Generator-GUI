@@ -7,7 +7,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-type widgets struct {
+type Widgets struct {
 	stepsInput             *widget.Entry
 	beatsInput             *widget.Entry
 	bpmInput               *widget.Entry
@@ -26,29 +26,29 @@ type widgets struct {
 	clickCheckbox          *widget.Check
 	accentDownbeatCheck    *widget.Check
 	removeSymmetryCheckbox *widget.Check
-	inversionStatus        int
 }
 
-type par struct {
-	steps     int
-	beats     int
-	bpm       int
-	euclidean string
-	custom    string
-	pattern   *string
+type Parameters struct {
+	steps           int
+	beats           int
+	bpm             int
+	euclidean       string
+	custom          string
+	pattern         *string
+	inversionStatus int
 }
 
-type prev struct {
+type PreviousState struct {
 	stepsInput string
 	beatsInput string
 	bpmInput   string
 }
 
 func Ui() {
-	w := &widgets{}
-	prev := &prev{}
-	par := &par{}
-	par.pattern = new(string)
+	w := &Widgets{}
+	prev := &PreviousState{}
+	p := &Parameters{}
+	p.pattern = new(string)
 
 	RGgui := app.New()
 	window := RGgui.NewWindow("Rhythm Generator")
@@ -72,26 +72,26 @@ func Ui() {
 
 	w.algCheckbox = widget.NewCheck("Custom Algorithm", func(value bool) {
 		if value {
-			chooseCustom(w, par)
+			chooseCustom(w, p)
 		} else {
-			chooseEuclidean(w, par)
+			chooseEuclidean(w, p)
 		}
 	})
 	w.removeSymmetryCheckbox = widget.NewCheck("Remove Symetry", func(value bool) {
 		if value {
-			removeSymmetry(w, *par.pattern, par)
+			removeSymmetry(w, *p.pattern, p)
 		} else {
-			fallBack(w, par)
+			fallBack(w, p)
 		}
 	})
 
 	w.fillCheckbox = widget.NewCheck("Fill Steps", func(value bool) {
-		if *par.pattern != "" {
+		if *p.pattern != "" {
 			switch value {
 			case true:
-				fillSteps(w, par.pattern)
+				fillSteps(w, p, p.pattern)
 			case false:
-				undofillSteps(w, par.pattern)
+				undofillSteps(w, p.pattern)
 			}
 		}
 	})
@@ -102,17 +102,17 @@ func Ui() {
 	w.bar = widget.NewLabel("")
 
 	w.invertRightButton = widget.NewButton("Invert Right", func() {
-		invertPattern(par.pattern, w, true)
+		invertPattern(p.pattern, w, p, true)
 	})
 
 	w.invertLeftButton = widget.NewButton("Invert Left", func() {
-		invertPattern(par.pattern, w, false)
+		invertPattern(p.pattern, w, p, false)
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
 		if changedInput(w, prev) {
 			var e *Error
-			e = callGenerators(w, par)
+			e = callGenerators(w, p)
 			if e != nil {
 				e.handleInputErrors(w)
 				return
@@ -120,8 +120,8 @@ func Ui() {
 			updatePrev(w, prev)
 		}
 		updateButtonStatePlay(w)
-		w.genPattern.SetText(*par.pattern)
-		go play(par, w)
+		w.genPattern.SetText(*p.pattern)
+		go play(p, w)
 	})
 
 	w.stopButton = widget.NewButton("Stop", func() {

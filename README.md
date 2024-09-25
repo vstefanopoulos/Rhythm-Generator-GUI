@@ -2,7 +2,7 @@
 
 ## **Description**
 
-This program offers two types of algorithms to generate, print and playback patterns of evenly spread beats (on sets) in a given number of steps (on sets + off sets). The default algorithm is the Euclidean Rhythm algorithm and the optional is Custom algorithm. Both algorithms produce similar results. In some cases the Custom algorithm produces less even but musically interesting patterns.  Rhythm Generator also offers an optional `fill` function that bridges the gap between beats that are separated by two or more off sets. The fill option produces results with more on set values, adding a type of *double time feel* to the new pattern while outlining the original. The results are notated with the capital letter `X` for onsets, lower case `o` for offsets and `x` for filled off sets.
+This program offers two types of algorithms to generate, print and playback patterns of evenly spread beats (onsets) in a given number of steps (onsets + offsets). The default algorithm is the Euclidean Rhythm algorithm and the optional is Custom algorithm. Both algorithms produce similar results. In some cases the Custom algorithm produces less even but musically interesting patterns.  Rhythm Generator also offers an optional `fill` function that bridges the gap between beats that are separated by two or more off sets. The fill option produces results with more on set values, adding a type of *double time feel* to the new pattern while outlining the original. The results are notated with the capital letter `X` for onsets, lower case `o` for offsets and `x` for filled off sets.
 
 ## **Usage**
 
@@ -26,6 +26,10 @@ If `Double Time` is checked the steps are interpreted as 16 notes. The threshold
 
 Click is in unison with the BPM unless `Double Time` is checked in which case the click is played in half time. In other words the steps are interpreted as 16 notes which is in aliment with the double time definition. Click can be turned on and off during playback.
 
+### Accent Downbeat
+
+If enabled the a lower pitched sound is triggered on the first step of each pattern.
+
 ### Play Offsets
 
 The default setting for this option is on. While playing you can toggle the play offsets checkbox. If not enabled the offsets are interpreted as rests while if enabled the offsets are interpreted as closed hihats.
@@ -40,19 +44,19 @@ By default the algorithm for pattern generation is Euclidean Rhythm. You can cha
 
 ### Remove Symmetry
 
-The `Remove Symmetry` option breaks the symmetry of a pattern by inverting the last part of the pattern. This produces more musically meaningful results. To see that in action dial 12 Steps 9 beats in your preferred Bpm. If a non symmetrical pattern is not achievable the check box will be disabled during play back and reenabled when stopped.
+The `Remove Symmetry` option breaks the symmetry of a pattern by inverting the last part of the pattern. This produces more musically meaningful results. To see that in action dial 12 Steps 9 beats in your preferred Bpm. If a non symmetrical pattern is not achievable the check box will be disabled until new steps or beats values are inserted.
 
-### Fill steps:  
+### Fill Steps:  
 
-Tick the fill steps box to add more movement to any pattern. If the fill steps function doesn't apply to the generated pattern the checkbox is automatically un checked.
+The `Fill Steps` box is disabled untile there is a generated pattern. Toggle to add more movement to a pattern. If the fill steps function doesn't apply to the generated pattern the checkbox is automatically un checked and disabled.
 
-### Play Fills
+### Omit Fills
 
-If there is a filled steps pattern generated `Play Fills` checkbox is automatically checked. If unchecked the filled steps are interpreted as rests creating some negative space in the pattern. If enabled the offsets are interpreted as softer values (a side stick sound). See [Play/Stop](#play-and-stop) and [Fill Steps](#fill-steps) for more info.
+If checked the filled steps are interpreted as rests creating some negative space in the pattern. If enabled the offsets are interpreted as softer values (a side stick sound). See [Play/Stop](#play-and-stop) and [Fill Steps](#fill-steps) for more info.
 
 ### Invert Left/Right:
 
-Inverts the generated pattern one step left or right. After inverting while playing the inversion while be played starting from the next bar. You can see the direction and invertion value as possitive integers for right and negative intergers for left.
+Inverts the generated pattern one step left or right. After inverting while playing the new inverted pattern will be played starting from the next bar. You can see the direction and invertion value as possitive integers for right and negative intergers for left.
 
 ## **Compatibility**
 

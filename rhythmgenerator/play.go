@@ -13,8 +13,8 @@ import (
 
 var stopPlayChan = make(chan struct{})
 
-func play(par *par, w *widgets) {
-	if *par.pattern == "" {
+func play(p *Parameters, w *Widgets) {
+	if *p.pattern == "" {
 		return
 	}
 	on := makeBuffer("./wav/rim.wav")
@@ -22,14 +22,21 @@ func play(par *par, w *widgets) {
 	off := makeBuffer("./wav/hh.wav")
 	clickDownBeat := makeBuffer("./wav/clickLow.wav")
 	click := makeBuffer("./wav/click.wav")
+	var bpm int
+	switch w.doubletimeCheckbox.Checked {
+	case false:
+		bpm = p.bpm
+	case true:
+		bpm = p.bpm * 2
 
-	ticker := time.NewTicker(time.Duration(60000/par.bpm) * time.Millisecond)
+	}
+	ticker := time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
 	var barCount int
 
 	for {
 		barCount++
 		w.bar.SetText(fmt.Sprint(barCount))
-		for i, char := range *par.pattern {
+		for i, char := range *p.pattern {
 			select {
 			case <-stopPlayChan:
 				ticker.Stop()
@@ -76,7 +83,7 @@ func makeBuffer(file string) *beep.Buffer {
 	return buffer
 }
 
-func playPattern(char rune, w *widgets, on, filler, off *beep.Buffer) {
+func playPattern(char rune, w *Widgets, on, filler, off *beep.Buffer) {
 	switch {
 	case char == 'X':
 		go func() {
