@@ -13,7 +13,7 @@ var primes = []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 5
 func removeSymmetry(w *Widgets, pattern string, p *Parameters) {
 	steps, beats := p.steps, p.beats
 	if isPrime := isPrime(steps); steps%beats == 0 || isPrime || steps < 9 || beats < 3 {
-		w.removeSymmetryCheckbox.SetChecked(false)
+		w.RsOk.SetText("Not Rs")
 		return
 	}
 
@@ -80,8 +80,9 @@ func removeSymmetry(w *Widgets, pattern string, p *Parameters) {
 	if w.fillCheckbox.Checked {
 		fillSteps(w, p, &newPattern)
 	}
-	w.genPattern.SetText(newPattern)
 	p.pattern = &newPattern
+	w.genPattern.SetText(newPattern)
+	w.RsOk.SetText("Rs!")
 }
 
 func fallBack(w *Widgets, p *Parameters) {

@@ -11,7 +11,6 @@ func callGenerators(w *Widgets, p *Parameters) *Error {
 	if err != nil {
 		return err
 	}
-	p.inversionStatus = 0
 	p.euclidean = euclideanGenerate(p.steps, p.beats)
 	p.custom = customGenerate(p.steps, p.beats)
 	if w.algCheckbox.Checked {

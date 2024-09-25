@@ -56,9 +56,9 @@ func fillSteps(w *Widgets, p *Parameters, pattern *string) {
 	if filledSteps {
 		w.genPattern.SetText(finalPattern)
 		*pattern = finalPattern
-		filledButtonState(w, true)
+		filledOk(w, true)
 	} else {
-		filledButtonState(w, false)
+		filledOk(w, false)
 	}
 }
 

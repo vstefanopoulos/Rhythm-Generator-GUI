@@ -1,12 +1,10 @@
 package rhythmgenerator
 
 func updateButtonStatePlay(w *Widgets) {
-
 	w.invertLeftButton.Enable()
 	w.invertRightButton.Enable()
 	w.playButton.Disable()
 	w.stopButton.Enable()
-	w.doubletimeCheckbox.Disable()
 	w.fillCheckbox.Enable()
 	w.omitFillsCheckbox.Enable()
 }
@@ -18,7 +16,6 @@ func updateButtonStateStop(w *Widgets) {
 	w.stopButton.Disable()
 	w.bar.SetText("Stopped")
 	w.algCheckbox.Enable()
-	w.doubletimeCheckbox.Enable()
 	w.removeSymmetryCheckbox.Enable()
 }
 
@@ -36,13 +33,10 @@ func initialButtonState(w *Widgets) {
 	w.inversionStatusLabel.SetText("Inversion Status: 0")
 }
 
-func filledButtonState(w *Widgets, enable bool) {
+func filledOk(w *Widgets, enable bool) {
 	if enable {
-		w.omitFillsCheckbox.Enable()
+		w.fillOk.SetText("Fill Ok!")
 	} else {
-		w.omitFillsCheckbox.SetChecked(false)
-		w.omitFillsCheckbox.Disable()
-		w.fillCheckbox.SetChecked(false)
-		w.fillCheckbox.Disable()
+		w.fillOk.SetText("Not Filled!")
 	}
 }

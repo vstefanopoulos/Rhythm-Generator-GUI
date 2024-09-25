@@ -12,6 +12,7 @@ import (
 )
 
 var stopPlayChan = make(chan struct{})
+var changeBpmChan = make(chan struct{})
 
 func play(p *Parameters, w *Widgets) {
 	if *p.pattern == "" {
@@ -23,19 +24,18 @@ func play(p *Parameters, w *Widgets) {
 	clickDownBeat := makeBuffer("./wav/clickLow.wav")
 	click := makeBuffer("./wav/click.wav")
 	var bpm int
-	switch w.doubletimeCheckbox.Checked {
-	case false:
-		bpm = p.bpm
-	case true:
-		bpm = p.bpm * 2
-
-	}
+	bpm = newBpm(w, p.bpm)
 	ticker := time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
 	var barCount int
-
 	for {
 		barCount++
 		w.bar.SetText(fmt.Sprint(barCount))
+		select {
+		case <-changeBpmChan:
+			bpm = newBpm(w, p.bpm)
+			ticker = time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
+		default:
+		}
 		for i, char := range *p.pattern {
 			select {
 			case <-stopPlayChan:
@@ -58,6 +58,14 @@ func play(p *Parameters, w *Widgets) {
 			}
 		}
 	}
+
+}
+
+func newBpm(w *Widgets, bpm int) int {
+	if w.doubletimeCheckbox.Checked {
+		return bpm * 2
+	}
+	return bpm
 }
 
 func stop() {

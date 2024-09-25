@@ -21,6 +21,8 @@ type Widgets struct {
 	inversionStatusLabel   *widget.Label
 	bar                    *widget.Label
 	genPattern             *widget.Label
+	fillOk                 *widget.Label
+	RsOk                   *widget.Label
 	algCheckbox            *widget.Check
 	fillCheckbox           *widget.Check
 	clickCheckbox          *widget.Check
@@ -58,14 +60,33 @@ func Ui() {
 
 	w.stepsInput = widget.NewEntry()
 	w.stepsInput.SetPlaceHolder("Steps")
+	w.stepsInput.OnSubmitted = func(content string) {
+		handlePlay(w, p, prev)
+	}
 
 	w.beatsInput = widget.NewEntry()
 	w.beatsInput.SetPlaceHolder("Beats")
+	w.beatsInput.OnSubmitted = func(content string) {
+		handlePlay(w, p, prev)
+	}
 
 	w.bpmInput = widget.NewEntry()
 	w.bpmInput.SetPlaceHolder("BPM")
+	w.bpmInput.OnSubmitted = func(content string) {
+		var err *Error
+		_, _, p.bpm, err = convertInput(w)
+		if err != nil {
+			stop()
+			err.handleInputErrors(w)
+		} else {
+			changeBpmChan <- struct{}{}
+		}
+	}
 
-	w.doubletimeCheckbox = widget.NewCheck("Double Time", func(value bool) {})
+	w.doubletimeCheckbox = widget.NewCheck("Double Time", func(value bool) {
+		// changeBpmChan <- struct{}{}
+	})
+
 	w.clickCheckbox = widget.NewCheck("Click", func(value bool) {})
 	w.accentDownbeatCheck = widget.NewCheck("Accent DownBeat", func(value bool) {})
 	w.playOffsetsCheckbox = widget.NewCheck("Play Offsets", func(value bool) {})
@@ -77,6 +98,7 @@ func Ui() {
 			chooseEuclidean(w, p)
 		}
 	})
+
 	w.removeSymmetryCheckbox = widget.NewCheck("Remove Symetry", func(value bool) {
 		if value {
 			removeSymmetry(w, *p.pattern, p)
@@ -95,9 +117,12 @@ func Ui() {
 			}
 		}
 	})
+
 	w.omitFillsCheckbox = widget.NewCheck("Omit Fills", func(value bool) {})
 
 	w.inversionStatusLabel = widget.NewLabel("")
+	w.fillOk = widget.NewLabel("Fill")
+	w.RsOk = widget.NewLabel("Rs")
 	w.genPattern = widget.NewLabel("")
 	w.bar = widget.NewLabel("")
 
@@ -110,17 +135,7 @@ func Ui() {
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
-		if changedInput(w, prev) {
-			var e *Error
-			e = callGenerators(w, p)
-			if e != nil {
-				e.handleInputErrors(w)
-				return
-			}
-			updatePrev(w, prev)
-		}
-		updateButtonStatePlay(w)
-		w.genPattern.SetText(*p.pattern)
+		handlePlay(w, p, prev)
 		go play(p, w)
 	})
 
@@ -134,10 +149,10 @@ func Ui() {
 	tempoBoxesRow := container.NewHBox(w.doubletimeCheckbox, w.clickCheckbox, w.accentDownbeatCheck, w.playOffsetsCheckbox)
 	playStopCol := container.NewVBox(w.playButton, w.stopButton)
 	algBoxesRow := container.NewHBox(w.algCheckbox, w.removeSymmetryCheckbox, w.fillCheckbox, w.omitFillsCheckbox)
-	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton)
+	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton, w.inversionStatusLabel, w.RsOk, w.fillOk)
 	PatBarRow := container.NewHBox(w.genPattern, w.bar)
 	allBoxes := container.NewVBox(banner, inputBoxCol, tempoBoxesRow, playStopCol, algBoxesRow,
-		invertButtonRow, w.inversionStatusLabel, PatBarRow)
+		invertButtonRow, PatBarRow)
 	content := container.NewHBox(allBoxes)
 	window.SetContent(content)
 	window.ShowAndRun()
