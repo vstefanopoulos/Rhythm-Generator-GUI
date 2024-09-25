@@ -49,13 +49,13 @@ func play(p *Parameters, w *Widgets) {
 					return
 				case <-ticker.C:
 					go func() {
-						if w.clickCheckbox.Checked {
+						if w.clickCheck.Checked {
 							switch {
 							case i == 0 && w.accentDownbeatCheck.Checked:
 								playClick(clickDownBeat)
-							case w.doubletimeCheckbox.Checked && i%4 == 0:
+							case w.doubletimeCheck.Checked && i%4 == 0:
 								playClick(click)
-							case !w.doubletimeCheckbox.Checked && i%2 == 0:
+							case !w.doubletimeCheck.Checked && i%2 == 0:
 								playClick(click)
 							}
 						}
@@ -63,14 +63,12 @@ func play(p *Parameters, w *Widgets) {
 					go playPattern(char, w, on, filler, off)
 				}
 			}
-
 		}
 	}
-
 }
 
 func newBpm(w *Widgets, bpm int) int {
-	if w.doubletimeCheckbox.Checked {
+	if w.doubletimeCheck.Checked {
 		return bpm * 2
 	}
 	return bpm
@@ -109,7 +107,7 @@ func playPattern(char rune, w *Widgets, on, filler, off *beep.Buffer) {
 		}()
 	case char == 'x':
 		go func() {
-			if !w.omitFillsCheckbox.Checked {
+			if !w.omitFillsCheck.Checked {
 				side := filler.Streamer(0, filler.Len())
 				speaker.Play(side)
 			} else {
@@ -118,7 +116,7 @@ func playPattern(char rune, w *Widgets, on, filler, off *beep.Buffer) {
 		}()
 	case char == 'o':
 		go func() {
-			if !w.omitOffsetsCheckbox.Checked {
+			if !w.omitOffsetsCheck.Checked {
 				hh := off.Streamer(0, off.Len())
 				speaker.Play(hh)
 			} else {

@@ -10,26 +10,26 @@ import (
 var isPlaying bool
 
 type Widgets struct {
-	stepsInput             *widget.Entry
-	beatsInput             *widget.Entry
-	bpmInput               *widget.Entry
-	doubletimeCheckbox     *widget.Check
-	omitOffsetsCheckbox    *widget.Check
-	omitFillsCheckbox      *widget.Check
-	playButton             *widget.Button
-	stopButton             *widget.Button
-	invertRightButton      *widget.Button
-	invertLeftButton       *widget.Button
-	inversionStatusLabel   *widget.Label
-	barLabel               *widget.Label
-	patternLabel           *widget.Label
-	fillOk                 *widget.Label
-	RsOk                   *widget.Label
-	algorithmType          *widget.Check
-	fillCheckbox           *widget.Check
-	clickCheckbox          *widget.Check
-	accentDownbeatCheck    *widget.Check
-	removeSymmetryCheckbox *widget.Check
+	stepsInput          *widget.Entry
+	beatsInput          *widget.Entry
+	bpmInput            *widget.Entry
+	playButton          *widget.Button
+	stopButton          *widget.Button
+	invertRightButton   *widget.Button
+	invertLeftButton    *widget.Button
+	inversionLabel      *widget.Label
+	barLabel            *widget.Label
+	patternLabel        *widget.Label
+	fillStatus          *widget.Label
+	RsStatus            *widget.Label
+	doubletimeCheck     *widget.Check
+	omitOffsetsCheck    *widget.Check
+	omitFillsCheck      *widget.Check
+	algorithmTypeCheck  *widget.Check
+	fillCheck           *widget.Check
+	clickCheck          *widget.Check
+	accentDownbeatCheck *widget.Check
+	removeSymmetryCheck *widget.Check
 }
 
 type Parameters struct {
@@ -39,7 +39,7 @@ type Parameters struct {
 	euclidean       string
 	custom          string
 	pattern         *string
-	inversionStatus int
+	inversionDegree int
 }
 
 type PreviousState struct {
@@ -92,17 +92,17 @@ func Ui() {
 		}
 	}
 
-	w.doubletimeCheckbox = widget.NewCheck("Double Time", func(value bool) {
+	w.doubletimeCheck = widget.NewCheck("Double Time", func(value bool) {
 		if isPlaying {
 			changeBpmChan <- struct{}{}
 		}
 	})
 
-	w.clickCheckbox = widget.NewCheck("Click", func(value bool) {})
+	w.clickCheck = widget.NewCheck("Click", func(value bool) {})
 	w.accentDownbeatCheck = widget.NewCheck("Accent DownBeat", func(value bool) {})
-	w.omitOffsetsCheckbox = widget.NewCheck("Omit Offsets", func(value bool) {})
+	w.omitOffsetsCheck = widget.NewCheck("Omit Offsets", func(value bool) {})
 
-	w.algorithmType = widget.NewCheck("Custom Algorithm", func(value bool) {
+	w.algorithmTypeCheck = widget.NewCheck("Custom Algorithm", func(value bool) {
 		if value {
 			chooseAlgorithm(w, p, true)
 		} else {
@@ -110,7 +110,7 @@ func Ui() {
 		}
 	})
 
-	w.removeSymmetryCheckbox = widget.NewCheck("Remove Symetry", func(value bool) {
+	w.removeSymmetryCheck = widget.NewCheck("Remove Symetry", func(value bool) {
 		if value {
 			removeSymmetry(w, *p.pattern, p)
 		} else {
@@ -118,7 +118,7 @@ func Ui() {
 		}
 	})
 
-	w.fillCheckbox = widget.NewCheck("Fill Steps", func(value bool) {
+	w.fillCheck = widget.NewCheck("Fill Steps", func(value bool) {
 		if *p.pattern != "" {
 			switch value {
 			case true:
@@ -129,11 +129,11 @@ func Ui() {
 		}
 	})
 
-	w.omitFillsCheckbox = widget.NewCheck("Omit Fills", func(value bool) {})
+	w.omitFillsCheck = widget.NewCheck("Omit Fills", func(value bool) {})
 
-	w.inversionStatusLabel = widget.NewLabel("")
-	w.fillOk = widget.NewLabel("Fill")
-	w.RsOk = widget.NewLabel("Rs")
+	w.inversionLabel = widget.NewLabel("")
+	w.fillStatus = widget.NewLabel("Fill")
+	w.RsStatus = widget.NewLabel("Rs")
 	w.patternLabel = widget.NewLabel("")
 	w.barLabel = widget.NewLabel("")
 
@@ -154,13 +154,14 @@ func Ui() {
 		stop()
 		updateButtonStateStop(w)
 	})
+
 	initialButtonState(w)
 
 	inputBoxCol := container.NewVBox(w.stepsInput, w.beatsInput, w.bpmInput)
-	tempoBoxesRow := container.NewHBox(w.doubletimeCheckbox, w.clickCheckbox, w.accentDownbeatCheck, w.omitOffsetsCheckbox)
+	tempoBoxesRow := container.NewHBox(w.doubletimeCheck, w.clickCheck, w.accentDownbeatCheck, w.omitOffsetsCheck)
 	playStopCol := container.NewVBox(w.playButton, w.stopButton)
-	algBoxesRow := container.NewHBox(w.algorithmType, w.removeSymmetryCheckbox, w.fillCheckbox, w.omitFillsCheckbox)
-	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton, w.inversionStatusLabel, w.RsOk, w.fillOk)
+	algBoxesRow := container.NewHBox(w.algorithmTypeCheck, w.removeSymmetryCheck, w.fillCheck, w.omitFillsCheck)
+	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton, w.inversionLabel, w.RsStatus, w.fillStatus)
 	PatBarRow := container.NewHBox(w.patternLabel, w.barLabel)
 	allBoxes := container.NewVBox(banner, inputBoxCol, tempoBoxesRow, playStopCol, algBoxesRow,
 		invertButtonRow, PatBarRow)

@@ -15,17 +15,17 @@ func callGenerators(w *Widgets, p *Parameters) *Error {
 	p.euclidean = euclideanGenerate(p.steps, p.beats)
 	p.custom = customGenerate(p.steps, p.beats)
 
-	if w.algorithmType.Checked {
+	if w.algorithmTypeCheck.Checked {
 		*p.pattern = p.custom
 	} else {
 		*p.pattern = p.euclidean
 	}
 
-	if w.removeSymmetryCheckbox.Checked {
+	if w.removeSymmetryCheck.Checked {
 		removeSymmetry(w, *p.pattern, p)
 	}
 
-	if p.steps/p.beats > 1 && w.fillCheckbox.Checked {
+	if p.steps/p.beats > 1 && w.fillCheck.Checked {
 		fillSteps(w, p, p.pattern)
 	}
 	return nil
@@ -33,6 +33,7 @@ func callGenerators(w *Widgets, p *Parameters) *Error {
 
 func chooseAlgorithm(w *Widgets, p *Parameters, t bool) {
 	var pattern string
+
 	if t {
 		pattern = p.custom
 	} else {
@@ -41,14 +42,14 @@ func chooseAlgorithm(w *Widgets, p *Parameters, t bool) {
 
 	pattern = reInvertPattern(pattern, p)
 
-	if w.removeSymmetryCheckbox.Checked {
+	if w.removeSymmetryCheck.Checked {
 		removeSymmetry(w, *p.pattern, p)
 	}
 
-	if w.fillCheckbox.Checked {
+	if w.fillCheck.Checked {
 		fillSteps(w, p, &pattern)
 	}
 
-	w.update(*p.pattern)
 	*p.pattern = pattern
+	w.updatePatternLabel(*p.pattern)
 }

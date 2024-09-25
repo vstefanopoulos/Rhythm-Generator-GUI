@@ -5,8 +5,8 @@ func updateButtonStatePlay(w *Widgets) {
 	w.invertRightButton.Enable()
 	w.playButton.Disable()
 	w.stopButton.Enable()
-	w.fillCheckbox.Enable()
-	w.omitFillsCheckbox.Enable()
+	w.fillCheck.Enable()
+	w.omitFillsCheck.Enable()
 }
 
 func updateButtonStateStop(w *Widgets) {
@@ -15,8 +15,8 @@ func updateButtonStateStop(w *Widgets) {
 	w.invertRightButton.Enable()
 	w.stopButton.Disable()
 	w.barLabel.SetText("Stopped")
-	w.algorithmType.Enable()
-	w.removeSymmetryCheckbox.Enable()
+	w.algorithmTypeCheck.Enable()
+	w.removeSymmetryCheck.Enable()
 }
 
 func initialButtonState(w *Widgets) {
@@ -24,31 +24,31 @@ func initialButtonState(w *Widgets) {
 	w.invertRightButton.Disable()
 	w.playButton.Enable()
 	w.stopButton.Disable()
-	w.algorithmType.Enable()
-	w.doubletimeCheckbox.Enable()
-	w.omitFillsCheckbox.Disable()
-	w.fillCheckbox.Disable()
-	w.removeSymmetryCheckbox.Enable()
-	w.inversionStatusLabel.SetText("Inversion Status: 0")
+	w.algorithmTypeCheck.Enable()
+	w.doubletimeCheck.Enable()
+	w.omitFillsCheck.Disable()
+	w.fillCheck.Disable()
+	w.removeSymmetryCheck.Enable()
+	w.inversionLabel.SetText("Inversion Status: 0")
 }
 
 func filledOk(w *Widgets, enable bool) {
 	if enable {
-		w.fillOk.SetText("Fill Ok!")
+		w.fillStatus.SetText("Fill Ok!")
 	} else {
-		w.fillOk.SetText("Not Filled!")
+		w.fillStatus.SetText("Not Filled!")
 	}
 }
 
 func rsOk(w *Widgets, ok bool) {
 	if ok {
-		w.RsOk.SetText("Rs: Ok")
+		w.RsStatus.SetText("Rs: Ok")
 	} else {
-		w.RsOk.SetText("Rs: n/a")
+		w.RsStatus.SetText("Rs: n/a")
 	}
 }
 
-func (w *Widgets) update(pattern string) {
+func (w *Widgets) updatePatternLabel(pattern string) {
 	if len(pattern) > 50 {
 		pattern = pattern[:47] + "..."
 	}

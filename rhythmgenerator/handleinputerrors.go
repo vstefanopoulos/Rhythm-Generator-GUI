@@ -7,14 +7,13 @@ type Error struct {
 
 func (err *Error) handleInputErrors(w *Widgets) {
 	if err != nil {
-		w.inversionStatusLabel.SetText(err.Message)
+		w.inversionLabel.SetText(err.Message)
 		if err.Solution != "" {
 			w.patternLabel.SetText(err.Solution)
 		}
 		if isPlaying {
 			stop()
 		}
-
 		initialButtonState(w)
 	}
 }

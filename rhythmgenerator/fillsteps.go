@@ -12,7 +12,7 @@ func fillSteps(w *Widgets, p *Parameters, pattern *string) {
 	parts := []int{}
 	newPattern := *pattern
 
-	if p.inversionStatus != 0 {
+	if p.inversionDegree != 0 {
 		newPattern = unInvertPattern(newPattern, p)
 	}
 
@@ -49,12 +49,12 @@ func fillSteps(w *Widgets, p *Parameters, pattern *string) {
 		}
 	}
 
-	if p.inversionStatus != 0 && filledSteps {
+	if p.inversionDegree != 0 && filledSteps {
 		finalPattern = reInvertPattern(finalPattern, p)
 	}
 
 	if filledSteps {
-		w.patternLabel.SetText(finalPattern)
+		w.updatePatternLabel(finalPattern)
 		*pattern = finalPattern
 		filledOk(w, true)
 	} else {
@@ -72,6 +72,7 @@ func undofillSteps(w *Widgets, pattern *string) {
 			newPattern += string(char)
 		}
 	}
+	w.updatePatternLabel(newPattern)
 	w.patternLabel.SetText(newPattern)
 	*pattern = newPattern
 }
