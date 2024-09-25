@@ -7,23 +7,25 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+var isPlaying bool
+
 type Widgets struct {
 	stepsInput             *widget.Entry
 	beatsInput             *widget.Entry
 	bpmInput               *widget.Entry
 	doubletimeCheckbox     *widget.Check
-	playOffsetsCheckbox    *widget.Check
+	omitOffsetsCheckbox    *widget.Check
 	omitFillsCheckbox      *widget.Check
 	playButton             *widget.Button
 	stopButton             *widget.Button
 	invertRightButton      *widget.Button
 	invertLeftButton       *widget.Button
 	inversionStatusLabel   *widget.Label
-	bar                    *widget.Label
-	genPattern             *widget.Label
+	barLabel               *widget.Label
+	patternLabel           *widget.Label
 	fillOk                 *widget.Label
 	RsOk                   *widget.Label
-	algCheckbox            *widget.Check
+	algorithmType          *widget.Check
 	fillCheckbox           *widget.Check
 	clickCheckbox          *widget.Check
 	accentDownbeatCheck    *widget.Check
@@ -61,41 +63,50 @@ func Ui() {
 	w.stepsInput = widget.NewEntry()
 	w.stepsInput.SetPlaceHolder("Steps")
 	w.stepsInput.OnSubmitted = func(content string) {
-		handlePlay(w, p, prev)
+		if isPlaying {
+			prepForPlay(w, p, prev)
+		}
+
 	}
 
 	w.beatsInput = widget.NewEntry()
 	w.beatsInput.SetPlaceHolder("Beats")
 	w.beatsInput.OnSubmitted = func(content string) {
-		handlePlay(w, p, prev)
+		if isPlaying {
+			prepForPlay(w, p, prev)
+		}
 	}
 
 	w.bpmInput = widget.NewEntry()
 	w.bpmInput.SetPlaceHolder("BPM")
 	w.bpmInput.OnSubmitted = func(content string) {
-		var err *Error
-		_, _, p.bpm, err = convertInput(w)
-		if err != nil {
-			stop()
-			err.handleInputErrors(w)
-		} else {
-			changeBpmChan <- struct{}{}
+		if isPlaying {
+			var err *Error
+			_, _, p.bpm, err = convertInput(w)
+			if err != nil {
+				stop()
+				err.handleInputErrors(w)
+			} else {
+				changeBpmChan <- struct{}{}
+			}
 		}
 	}
 
 	w.doubletimeCheckbox = widget.NewCheck("Double Time", func(value bool) {
-		// changeBpmChan <- struct{}{}
+		if isPlaying {
+			changeBpmChan <- struct{}{}
+		}
 	})
 
 	w.clickCheckbox = widget.NewCheck("Click", func(value bool) {})
 	w.accentDownbeatCheck = widget.NewCheck("Accent DownBeat", func(value bool) {})
-	w.playOffsetsCheckbox = widget.NewCheck("Play Offsets", func(value bool) {})
+	w.omitOffsetsCheckbox = widget.NewCheck("Omit Offsets", func(value bool) {})
 
-	w.algCheckbox = widget.NewCheck("Custom Algorithm", func(value bool) {
+	w.algorithmType = widget.NewCheck("Custom Algorithm", func(value bool) {
 		if value {
-			chooseCustom(w, p)
+			chooseAlgorithm(w, p, true)
 		} else {
-			chooseEuclidean(w, p)
+			chooseAlgorithm(w, p, false)
 		}
 	})
 
@@ -123,8 +134,8 @@ func Ui() {
 	w.inversionStatusLabel = widget.NewLabel("")
 	w.fillOk = widget.NewLabel("Fill")
 	w.RsOk = widget.NewLabel("Rs")
-	w.genPattern = widget.NewLabel("")
-	w.bar = widget.NewLabel("")
+	w.patternLabel = widget.NewLabel("")
+	w.barLabel = widget.NewLabel("")
 
 	w.invertRightButton = widget.NewButton("Invert Right", func() {
 		invertPattern(p.pattern, w, p, true)
@@ -135,7 +146,7 @@ func Ui() {
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
-		handlePlay(w, p, prev)
+		prepForPlay(w, p, prev)
 		go play(p, w)
 	})
 
@@ -146,11 +157,11 @@ func Ui() {
 	initialButtonState(w)
 
 	inputBoxCol := container.NewVBox(w.stepsInput, w.beatsInput, w.bpmInput)
-	tempoBoxesRow := container.NewHBox(w.doubletimeCheckbox, w.clickCheckbox, w.accentDownbeatCheck, w.playOffsetsCheckbox)
+	tempoBoxesRow := container.NewHBox(w.doubletimeCheckbox, w.clickCheckbox, w.accentDownbeatCheck, w.omitOffsetsCheckbox)
 	playStopCol := container.NewVBox(w.playButton, w.stopButton)
-	algBoxesRow := container.NewHBox(w.algCheckbox, w.removeSymmetryCheckbox, w.fillCheckbox, w.omitFillsCheckbox)
+	algBoxesRow := container.NewHBox(w.algorithmType, w.removeSymmetryCheckbox, w.fillCheckbox, w.omitFillsCheckbox)
 	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton, w.inversionStatusLabel, w.RsOk, w.fillOk)
-	PatBarRow := container.NewHBox(w.genPattern, w.bar)
+	PatBarRow := container.NewHBox(w.patternLabel, w.barLabel)
 	allBoxes := container.NewVBox(banner, inputBoxCol, tempoBoxesRow, playStopCol, algBoxesRow,
 		invertButtonRow, PatBarRow)
 	content := container.NewHBox(allBoxes)

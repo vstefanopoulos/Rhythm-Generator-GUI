@@ -13,7 +13,7 @@ var primes = []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 5
 func removeSymmetry(w *Widgets, pattern string, p *Parameters) {
 	steps, beats := p.steps, p.beats
 	if isPrime := isPrime(steps); steps%beats == 0 || isPrime || steps < 9 || beats < 3 {
-		w.RsOk.SetText("Not Rs")
+		rsOk(w, true)
 		return
 	}
 
@@ -81,14 +81,14 @@ func removeSymmetry(w *Widgets, pattern string, p *Parameters) {
 		fillSteps(w, p, &newPattern)
 	}
 	p.pattern = &newPattern
-	w.genPattern.SetText(newPattern)
-	w.RsOk.SetText("Rs!")
+	w.patternLabel.SetText(newPattern)
+	rsOk(w, true)
 }
 
 func fallBack(w *Widgets, p *Parameters) {
 	var fallBackPattern string
 
-	if w.algCheckbox.Checked {
+	if w.algorithmType.Checked {
 		fallBackPattern = customGenerate(p.steps, p.beats)
 	} else {
 		fallBackPattern = euclideanGenerate(p.steps, p.beats)
@@ -101,7 +101,7 @@ func fallBack(w *Widgets, p *Parameters) {
 	if w.fillCheckbox.Checked {
 		fillSteps(w, p, &fallBackPattern)
 	}
-	w.genPattern.SetText(fallBackPattern)
+	w.patternLabel.SetText(fallBackPattern)
 	p.pattern = &fallBackPattern
 }
 

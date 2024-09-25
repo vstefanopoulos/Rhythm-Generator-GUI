@@ -12,7 +12,7 @@ func invertPattern(pattern *string, w *Widgets, p *Parameters, right bool) {
 		p.inversionStatus = (p.inversionStatus - 1) % len(newPattern)
 	}
 	w.inversionStatusLabel.SetText(fmt.Sprintf("Inversion Status: %v", p.inversionStatus))
-	w.genPattern.SetText(newPattern)
+	w.patternLabel.SetText(newPattern)
 	*pattern = newPattern
 }
 

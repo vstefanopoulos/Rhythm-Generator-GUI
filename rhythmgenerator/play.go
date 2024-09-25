@@ -18,44 +18,52 @@ func play(p *Parameters, w *Widgets) {
 	if *p.pattern == "" {
 		return
 	}
+
 	on := makeBuffer("./wav/rim.wav")
 	filler := makeBuffer("./wav/side.wav")
 	off := makeBuffer("./wav/hh.wav")
 	clickDownBeat := makeBuffer("./wav/clickLow.wav")
 	click := makeBuffer("./wav/click.wav")
+
 	var bpm int
 	bpm = newBpm(w, p.bpm)
 	ticker := time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
+
 	var barCount int
 	for {
 		barCount++
-		w.bar.SetText(fmt.Sprint(barCount))
+		w.barLabel.SetText(fmt.Sprint("Bar: ", barCount))
 		select {
 		case <-changeBpmChan:
 			bpm = newBpm(w, p.bpm)
-			ticker = time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
-		default:
-		}
-		for i, char := range *p.pattern {
 			select {
-			case <-stopPlayChan:
-				ticker.Stop()
-				return
 			case <-ticker.C:
-				go func() {
-					if w.clickCheckbox.Checked {
-						switch {
-						case i == 0 && w.accentDownbeatCheck.Checked:
-							playClick(clickDownBeat)
-						case w.doubletimeCheckbox.Checked && i%4 == 0:
-							playClick(click)
-						case !w.doubletimeCheckbox.Checked && i%2 == 0:
-							playClick(click)
-						}
-					}
-				}()
-				go playPattern(char, w, on, filler, off)
+				ticker = time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
 			}
+
+		default:
+			for i, char := range *p.pattern {
+				select {
+				case <-stopPlayChan:
+					ticker.Stop()
+					return
+				case <-ticker.C:
+					go func() {
+						if w.clickCheckbox.Checked {
+							switch {
+							case i == 0 && w.accentDownbeatCheck.Checked:
+								playClick(clickDownBeat)
+							case w.doubletimeCheckbox.Checked && i%4 == 0:
+								playClick(click)
+							case !w.doubletimeCheckbox.Checked && i%2 == 0:
+								playClick(click)
+							}
+						}
+					}()
+					go playPattern(char, w, on, filler, off)
+				}
+			}
+
 		}
 	}
 
@@ -70,6 +78,7 @@ func newBpm(w *Widgets, bpm int) int {
 
 func stop() {
 	stopPlayChan <- struct{}{}
+	isPlaying = false
 }
 
 func makeBuffer(file string) *beep.Buffer {
@@ -109,7 +118,7 @@ func playPattern(char rune, w *Widgets, on, filler, off *beep.Buffer) {
 		}()
 	case char == 'o':
 		go func() {
-			if w.playOffsetsCheckbox.Checked {
+			if !w.omitOffsetsCheckbox.Checked {
 				hh := off.Streamer(0, off.Len())
 				speaker.Play(hh)
 			} else {

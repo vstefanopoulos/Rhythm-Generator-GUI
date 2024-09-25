@@ -9,8 +9,12 @@ func (err *Error) handleInputErrors(w *Widgets) {
 	if err != nil {
 		w.inversionStatusLabel.SetText(err.Message)
 		if err.Solution != "" {
-			w.genPattern.SetText(err.Solution)
+			w.patternLabel.SetText(err.Solution)
 		}
+		if isPlaying {
+			stop()
+		}
+
 		initialButtonState(w)
 	}
 }

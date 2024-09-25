@@ -54,7 +54,7 @@ func fillSteps(w *Widgets, p *Parameters, pattern *string) {
 	}
 
 	if filledSteps {
-		w.genPattern.SetText(finalPattern)
+		w.patternLabel.SetText(finalPattern)
 		*pattern = finalPattern
 		filledOk(w, true)
 	} else {
@@ -72,6 +72,6 @@ func undofillSteps(w *Widgets, pattern *string) {
 			newPattern += string(char)
 		}
 	}
-	w.genPattern.SetText(newPattern)
+	w.patternLabel.SetText(newPattern)
 	*pattern = newPattern
 }

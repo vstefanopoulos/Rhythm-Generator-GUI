@@ -1,6 +1,6 @@
 package rhythmgenerator
 
-func handlePlay(w *Widgets, p *Parameters, prev *PreviousState) {
+func prepForPlay(w *Widgets, p *Parameters, prev *PreviousState) {
 	if changedInput(w, prev) {
 		var e *Error
 		e = callGenerators(w, p)
@@ -10,6 +10,7 @@ func handlePlay(w *Widgets, p *Parameters, prev *PreviousState) {
 		}
 		updatePrev(w, prev)
 	}
+	isPlaying = true
 	updateButtonStatePlay(w)
-	w.genPattern.SetText(*p.pattern)
+	w.update(*p.pattern)
 }
