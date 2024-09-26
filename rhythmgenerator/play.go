@@ -15,17 +15,10 @@ import (
 var stopPlayChan = make(chan struct{})
 var changeBpmChan = make(chan struct{})
 
-func play(p *Parameters, w *Widgets) {
+func play(p *Parameters, w *Widgets, buf *Buffer) {
 	if *p.pattern == "" {
 		return
 	}
-
-	on := makeBuffer("./wav/rim.wav")
-	filler := makeBuffer("./wav/side.wav")
-	off := makeBuffer("./wav/hh.wav")
-	clickDownBeat := makeBuffer("./wav/clickLow.wav")
-	click := makeBuffer("./wav/click.wav")
-
 	var bpm int
 	bpm = newBpm(w, p.bpm)
 	ticker := time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
@@ -54,15 +47,15 @@ func play(p *Parameters, w *Widgets) {
 						if w.clickCheck.Checked {
 							switch {
 							case i == 0 && w.accentDownbeatCheck.Checked:
-								playClick(clickDownBeat)
+								playClick(buf.clickDownBeat)
 							case w.doubletimeCheck.Checked && i%4 == 0:
-								playClick(click)
+								playClick(buf.click)
 							case !w.doubletimeCheck.Checked && i%2 == 0:
-								playClick(click)
+								playClick(buf.click)
 							}
 						}
 					}()
-					go playPattern(char, w, on, filler, off)
+					go playPattern(char, w, buf.on, buf.filler, buf.off)
 				}
 			}
 		}

@@ -6,13 +6,13 @@ This program offers two types of algorithms to generate, print and playback patt
 
 ## **Usage**
 
-### Steps
-
-Dial in the `Steps` box the appropriate integer value for the desired steps. While playing you can change the steps by dialling in a new value and hittig `enter`. The new pattern will be auditioned on the next bar.
-
 ### Beats
 
 Dial in the `Beats` box the appropriate integer value for the desired beats. Beats must be a smaller integer than steps. While playing you can change the beats by dialling in a new value and hittig `enter`. The new pattern will be auditioned on the next bar.
+
+### Steps
+
+Dial in the `Steps` box the appropriate integer value for the desired steps. While playing you can change the steps by dialling in a new value and hittig `enter`. The new pattern will be auditioned on the next bar.
 
 ### BPM
 

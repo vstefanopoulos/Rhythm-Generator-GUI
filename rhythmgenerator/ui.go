@@ -5,6 +5,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+	"github.com/gopxl/beep"
 )
 
 type Widgets struct {
@@ -41,6 +42,14 @@ type Parameters struct {
 	isPlaying       bool
 }
 
+type Buffer struct {
+	on            *beep.Buffer
+	off           *beep.Buffer
+	filler        *beep.Buffer
+	clickDownBeat *beep.Buffer
+	click         *beep.Buffer
+}
+
 type PreviousState struct {
 	stepsInput string
 	beatsInput string
@@ -52,6 +61,13 @@ func Ui() {
 	prev := &PreviousState{}
 	p := &Parameters{}
 	p.pattern = new(string)
+	buf := &Buffer{
+		on:            makeBuffer("./wav/rim.wav"),
+		filler:        makeBuffer("./wav/side.wav"),
+		off:           makeBuffer("./wav/hh.wav"),
+		clickDownBeat: makeBuffer("./wav/clickLow.wav"),
+		click:         makeBuffer("./wav/click.wav"),
+	}
 
 	RGgui := app.New()
 	window := RGgui.NewWindow("Rhythm Generator")
@@ -146,7 +162,7 @@ func Ui() {
 
 	w.playButton = widget.NewButton("Play", func() {
 		prepForPlay(w, p, prev)
-		go play(p, w)
+		go play(p, w, buf)
 	})
 
 	w.stopButton = widget.NewButton("Stop", func() {
