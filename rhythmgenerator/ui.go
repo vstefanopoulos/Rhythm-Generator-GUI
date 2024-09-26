@@ -111,7 +111,9 @@ func Ui() {
 
 	w.doubletimeCheck = widget.NewCheck("Double Time", func(value bool) {
 		if p.isPlaying {
-			changeBpmChan <- struct{}{}
+			go func() {
+				changeBpmChan <- struct{}{}
+			}()
 		}
 	})
 
