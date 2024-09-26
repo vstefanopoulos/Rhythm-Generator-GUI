@@ -28,6 +28,10 @@ func callGenerators(w *Widgets, p *Parameters) *Error {
 	if w.fillCheck.Checked {
 		fillSteps(w, p, p.pattern)
 	}
+
+	if p.inversionDegree != 0 {
+		*p.pattern = reInvert(*p.pattern, p)
+	}
 	return nil
 }
 
@@ -40,7 +44,7 @@ func chooseAlgorithm(w *Widgets, p *Parameters, t bool) {
 		pattern = p.euclidean
 	}
 
-	pattern = reInvertPattern(pattern, p)
+	pattern = reInvert(pattern, p)
 
 	if w.removeSymmetryCheck.Checked {
 		removeSymmetry(w, *p.pattern, p)

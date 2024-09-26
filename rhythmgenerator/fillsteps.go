@@ -1,7 +1,9 @@
-// newPattern adds a lower case 'x' on every "Xoo" block
+// fillSteps adds a lower case 'x' on every "Xoo" block
 // if there is a pattern of "Xooo" or more 'o's it calls
-// Euclidean on this block and all 'x's but the first
-// a lower case 'x'
+// Euclidean on this block and makes all 'x's but the first
+// a lower case 'x'. FillSteps only works on uninverted patterns
+// that begin with an 'X' which is why every pattern has to be
+// uninverted and then reinverted.
 
 package rhythmgenerator
 
@@ -20,7 +22,7 @@ func fillSteps(w *Widgets, p *Parameters, pattern *string) {
 	newPattern := *pattern
 
 	if p.inversionDegree != 0 {
-		newPattern = unInvertPattern(newPattern, p)
+		newPattern = unInvert(newPattern, p)
 	}
 
 	for i, j := range newPattern {
@@ -57,7 +59,7 @@ func fillSteps(w *Widgets, p *Parameters, pattern *string) {
 	}
 
 	if p.inversionDegree != 0 && filledSteps {
-		finalPattern = reInvertPattern(finalPattern, p)
+		finalPattern = reInvert(finalPattern, p)
 	}
 
 	if filledSteps {

@@ -137,11 +137,11 @@ func Ui() {
 	w.barLabel = widget.NewLabel("")
 
 	w.invertRightButton = widget.NewButton("Invert Right", func() {
-		invertPattern(p.pattern, w, p, true)
+		invertRight(p.pattern, w, p)
 	})
 
 	w.invertLeftButton = widget.NewButton("Invert Left", func() {
-		invertPattern(p.pattern, w, p, false)
+		invertLeft(p.pattern, w, p)
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
