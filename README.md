@@ -44,13 +44,13 @@ By default the algorithm for pattern generation is Euclidean Rhythm. You can cha
 
 ### Remove Symmetry
 
-The `Remove Symmetry` option breaks the symmetry of a pattern by inverting the last part of the pattern. This produces more musically meaningful results. To see that in action dial 12 Steps 9 beats in your preferred Bpm. If a non symmetrical pattern is not achievable the check box will be disabled until new steps or beats values are inserted.
+The `Remove Symmetry` option breaks the symmetry of a pattern by inverting the last part of the pattern. This produces more musically meaningful results. To see that in action dial `Steps: 15` and `Beats: 6` in your preferred Bpm and compare that result . If a non symmetrical pattern is not achievable the check box will be disabled until new steps or beats values are inserted.
 
 ### Fill Steps:  
 
-The `Fill Steps` box is disabled untile there is a generated pattern. Toggle to add more movement to a pattern. If the fill steps function doesn't apply to the generated pattern the checkbox is automatically un checked and disabled.
+The `Fill Steps` box is disabled untile there is a generated pattern. Toggle to add more movement to a pattern. If the fill steps function doesn't apply to the generated pattern the message fill. If after checked and if filled pattern is possible, when unchecking the filled steps are played as offsets.
 
-### Omit Fills
+### Mute Fills
 
 If checked the filled steps are interpreted as rests creating some negative space in the pattern. If enabled the offsets are interpreted as softer values (a side stick sound). See [Play/Stop](#play-and-stop) and [Fill Steps](#fill-steps) for more info.
 

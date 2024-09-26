@@ -30,6 +30,7 @@ func play(p *Parameters, w *Widgets) {
 	ticker := time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
 
 	var barCount int
+	isPlaying = true
 	for {
 		barCount++
 		w.barLabel.SetText(fmt.Sprint("Bar: ", barCount))

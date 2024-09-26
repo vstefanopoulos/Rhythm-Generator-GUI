@@ -25,7 +25,7 @@ func callGenerators(w *Widgets, p *Parameters) *Error {
 		removeSymmetry(w, *p.pattern, p)
 	}
 
-	if p.steps/p.beats > 1 && w.fillCheck.Checked {
+	if w.fillCheck.Checked {
 		fillSteps(w, p, p.pattern)
 	}
 	return nil

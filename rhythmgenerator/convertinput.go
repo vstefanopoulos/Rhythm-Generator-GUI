@@ -42,9 +42,7 @@ func convertInput(w *Widgets) (int, int, int, *Error) {
 		e.Solution = err.Error()
 		return 0, 0, 0, &e
 	}
-
 	bpm *= 2
-
 	if bpm > 1000 {
 		e.Message = ("Too fast for me")
 		e.Solution = ("Fastest I can go is 500bpm")

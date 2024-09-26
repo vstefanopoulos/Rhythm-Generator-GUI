@@ -32,8 +32,43 @@ func removeSymmetry(w *Widgets, pattern string, p *Parameters) {
 		rsOk(w, false)
 		return
 	}
+	newPattern := swapLast(pattern, steps, symmetryAxis)
 
-	cell := string(pattern[:steps/symmetryAxis])
+	if p.inversionDegree != 0 {
+		newPattern = reInvertPattern(newPattern, p)
+	}
+	if w.fillCheck.Checked {
+		fillSteps(w, p, &newPattern)
+	}
+
+	p.pattern = &newPattern
+	w.updatePatternLabel(*p.pattern)
+	rsOk(w, true)
+}
+
+func findAxis(steps int, pattern string) int {
+	var symmetryAxis int
+	var period int
+	for _, prime := range primes {
+		if prime >= steps/2 {
+			break
+		}
+		if steps%prime == 0 {
+			period = steps / prime
+			for j := period; j <= steps-period; j += period {
+				if pattern[:period] != pattern[j:j+period] {
+					return 0
+				}
+			}
+			symmetryAxis = period
+			break
+		}
+	}
+	return symmetryAxis
+}
+
+func swapLast(pattern string, steps int, symmetryAxis int) string {
+	cell := string(pattern[:symmetryAxis])
 	var sets [][]string
 	start := 0
 	var end int
@@ -62,34 +97,7 @@ func removeSymmetry(w *Widgets, pattern string, p *Parameters) {
 			newPattern += string(sets[i][k])
 		}
 	}
-
-	if p.inversionDegree != 0 {
-		newPattern = reInvertPattern(newPattern, p)
-	}
-	if w.fillCheck.Checked {
-		fillSteps(w, p, &newPattern)
-	}
-
-	p.pattern = &newPattern
-	w.updatePatternLabel(*p.pattern)
-	rsOk(w, true)
-}
-
-func findAxis(steps int, pattern string) int {
-	var symmetryAxis int
-	for _, i := range primes {
-		if steps%i == 0 {
-			period := steps / i
-			for j := period; j <= steps-period; j += period {
-				if pattern[:period] != pattern[j:j+period] {
-					return 0
-				}
-			}
-			symmetryAxis = i
-			break
-		}
-	}
-	return symmetryAxis
+	return newPattern
 }
 
 func fallBack(w *Widgets, p *Parameters) {
@@ -104,7 +112,6 @@ func fallBack(w *Widgets, p *Parameters) {
 	if p.inversionDegree != 0 {
 		fallBackPattern = reInvertPattern(fallBackPattern, p)
 	}
-
 	if w.fillCheck.Checked {
 		fillSteps(w, p, &fallBackPattern)
 	}

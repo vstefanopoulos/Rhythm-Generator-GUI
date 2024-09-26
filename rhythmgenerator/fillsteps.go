@@ -6,6 +6,13 @@
 package rhythmgenerator
 
 func fillSteps(w *Widgets, p *Parameters, pattern *string) {
+	if *p.pattern == "" {
+		return
+	} else if !(p.steps/p.beats > 1) {
+		filledOk(w, false)
+		return
+	}
+
 	var finalPattern string
 	var count int
 	var filledSteps bool
@@ -63,6 +70,9 @@ func fillSteps(w *Widgets, p *Parameters, pattern *string) {
 }
 
 func undofillSteps(w *Widgets, pattern *string) {
+	if *pattern == "" {
+		return
+	}
 	var filledPattern string = *pattern
 	var newPattern string
 	for _, char := range filledPattern {

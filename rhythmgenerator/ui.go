@@ -157,7 +157,7 @@ func Ui() {
 
 	initialButtonState(w)
 
-	inputBoxCol := container.NewVBox(w.stepsInput, w.beatsInput, w.bpmInput)
+	inputBoxCol := container.NewVBox(w.beatsInput, w.stepsInput, w.bpmInput)
 	tempoBoxesRow := container.NewHBox(w.doubletimeCheck, w.clickCheck, w.accentDownbeatCheck, w.omitOffsetsCheck)
 	playStopCol := container.NewVBox(w.playButton, w.stopButton)
 	algBoxesRow := container.NewHBox(w.algorithmTypeCheck, w.removeSymmetryCheck, w.fillCheck, w.omitFillsCheck)

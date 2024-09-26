@@ -10,7 +10,6 @@ func prepForPlay(w *Widgets, p *Parameters, prev *PreviousState) {
 		}
 		updatePrev(w, prev)
 	}
-	isPlaying = true
 	updateButtonStatePlay(w)
 	w.updatePatternLabel(*p.pattern)
 }
