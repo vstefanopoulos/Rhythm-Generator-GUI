@@ -1,3 +1,4 @@
+// TODO: Fix latency when re instaciating ticker
 package rhythmgenerator
 
 import (
@@ -108,7 +109,7 @@ func playPattern(char rune, w *Widgets, on, filler, off *beep.Buffer) {
 		}()
 	case char == 'x':
 		go func() {
-			if !w.omitFillsCheck.Checked {
+			if !w.muteFillsCheck.Checked {
 				side := filler.Streamer(0, filler.Len())
 				speaker.Play(side)
 			} else {
@@ -117,7 +118,7 @@ func playPattern(char rune, w *Widgets, on, filler, off *beep.Buffer) {
 		}()
 	case char == 'o':
 		go func() {
-			if !w.omitOffsetsCheck.Checked {
+			if !w.muteOffsetsCheck.Checked {
 				hh := off.Streamer(0, off.Len())
 				speaker.Play(hh)
 			} else {

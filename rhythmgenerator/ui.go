@@ -23,8 +23,8 @@ type Widgets struct {
 	fillStatus          *widget.Label
 	RsStatus            *widget.Label
 	doubletimeCheck     *widget.Check
-	omitOffsetsCheck    *widget.Check
-	omitFillsCheck      *widget.Check
+	muteOffsetsCheck    *widget.Check
+	muteFillsCheck      *widget.Check
 	algorithmTypeCheck  *widget.Check
 	fillCheck           *widget.Check
 	clickCheck          *widget.Check
@@ -100,7 +100,7 @@ func Ui() {
 
 	w.clickCheck = widget.NewCheck("Click", func(value bool) {})
 	w.accentDownbeatCheck = widget.NewCheck("Accent DownBeat", func(value bool) {})
-	w.omitOffsetsCheck = widget.NewCheck("Omit Offsets", func(value bool) {})
+	w.muteOffsetsCheck = widget.NewCheck("Mute Offsets", func(value bool) {})
 
 	w.algorithmTypeCheck = widget.NewCheck("Custom Algorithm", func(value bool) {
 		if value {
@@ -129,7 +129,7 @@ func Ui() {
 		}
 	})
 
-	w.omitFillsCheck = widget.NewCheck("Omit Fills", func(value bool) {})
+	w.muteFillsCheck = widget.NewCheck("Mute Fills", func(value bool) {})
 
 	w.inversionLabel = widget.NewLabel("")
 	w.fillStatus = widget.NewLabel("Fill")
@@ -158,9 +158,9 @@ func Ui() {
 	initialButtonState(w)
 
 	inputBoxCol := container.NewVBox(w.beatsInput, w.stepsInput, w.bpmInput)
-	tempoBoxesRow := container.NewHBox(w.doubletimeCheck, w.clickCheck, w.accentDownbeatCheck, w.omitOffsetsCheck)
+	tempoBoxesRow := container.NewHBox(w.doubletimeCheck, w.clickCheck, w.accentDownbeatCheck, w.muteOffsetsCheck)
 	playStopCol := container.NewVBox(w.playButton, w.stopButton)
-	algBoxesRow := container.NewHBox(w.algorithmTypeCheck, w.removeSymmetryCheck, w.fillCheck, w.omitFillsCheck)
+	algBoxesRow := container.NewHBox(w.algorithmTypeCheck, w.removeSymmetryCheck, w.fillCheck, w.muteFillsCheck)
 	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton, w.inversionLabel, w.RsStatus, w.fillStatus)
 	PatBarRow := container.NewHBox(w.patternLabel, w.barLabel)
 	allBoxes := container.NewVBox(banner, inputBoxCol, tempoBoxesRow, playStopCol, algBoxesRow,

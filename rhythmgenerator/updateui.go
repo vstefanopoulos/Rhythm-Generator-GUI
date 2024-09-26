@@ -6,7 +6,7 @@ func updateButtonStatePlay(w *Widgets) {
 	w.playButton.Disable()
 	w.stopButton.Enable()
 	w.fillCheck.Enable()
-	w.omitFillsCheck.Enable()
+	w.muteFillsCheck.Enable()
 }
 
 func updateButtonStateStop(w *Widgets) {
@@ -26,7 +26,7 @@ func initialButtonState(w *Widgets) {
 	w.stopButton.Disable()
 	w.algorithmTypeCheck.Enable()
 	w.doubletimeCheck.Enable()
-	w.omitFillsCheck.Disable()
+	w.muteFillsCheck.Disable()
 	w.fillCheck.Disable()
 	w.removeSymmetryCheck.Enable()
 	w.inversionLabel.SetText("Inversion Status: 0")
