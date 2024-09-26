@@ -30,9 +30,9 @@ Click is in unison with the BPM unless `Double Time` is checked in which case th
 
 If enabled a lower pitched sound is triggered on the first step of each pattern.
 
-### Omit Offsets
+### Mute Offsets
 
-While playing you can toggle the play offsets checkbox. If enabled the offsets are interpreted as rests and in the opposite case the offsets are interpreted as closed hihats.
+While playing you can toggle the mute offsets checkbox. If enabled the offsets are interpreted as rests.
 
 ### Play and Stop 
 
