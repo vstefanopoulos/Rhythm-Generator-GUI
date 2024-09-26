@@ -1,4 +1,3 @@
-// TODO: Fix latency when re instaciating ticker
 package rhythmgenerator
 
 import (
@@ -13,6 +12,7 @@ import (
 )
 
 var stopPlayChan = make(chan struct{})
+var stopClockChan = make(chan struct{})
 var changeBpmChan = make(chan struct{})
 
 func play(p *Parameters, w *Widgets, buf *Buffer) {
@@ -21,8 +21,9 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 	}
 	var bpm int
 	bpm = newBpm(w, p.bpm)
-	ticker := time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
-
+	p.beat = 6000000 / bpm
+	click := make(chan struct{})
+	go clock(p, &click)
 	var barCount int
 	p.isPlaying = true
 	for {
@@ -31,18 +32,17 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 		select {
 		case <-changeBpmChan:
 			bpm = newBpm(w, p.bpm)
+			newBeat := 6000000 / bpm
 			select {
-			case <-ticker.C:
-				ticker = time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
+			case <-click:
+				p.beat = newBeat
+				p.tic = newBeat - 100
 			}
 
 		default:
 			for i, char := range *p.pattern {
 				select {
-				case <-stopPlayChan:
-					ticker.Stop()
-					return
-				case <-ticker.C:
+				case <-click:
 					go func() {
 						if w.clickCheck.Checked {
 							switch {
@@ -56,6 +56,8 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 						}
 					}()
 					go playPattern(char, w, buf.on, buf.filler, buf.off)
+				case <-stopPlayChan:
+					return
 				}
 			}
 		}
@@ -71,7 +73,25 @@ func newBpm(w *Widgets, bpm int) int {
 
 func stop(p *Parameters) {
 	stopPlayChan <- struct{}{}
+	stopClockChan <- struct{}{}
 	p.isPlaying = false
+}
+
+func clock(p *Parameters, click *chan struct{}) {
+	masterClock := time.NewTicker(10000 * time.Nanosecond)
+	for {
+		select {
+		case <-masterClock.C:
+			p.tic++
+			if p.tic == p.beat {
+				*click <- struct{}{}
+				p.tic = 0
+			}
+		case <-stopClockChan:
+			masterClock.Stop()
+			return
+		}
+	}
 }
 
 func makeBuffer(file string) *beep.Buffer {

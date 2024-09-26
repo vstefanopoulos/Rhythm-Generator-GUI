@@ -36,6 +36,8 @@ type Parameters struct {
 	beats           int
 	bpm             int
 	inversionDegree int
+	beat            int
+	tic             int
 	euclidean       string
 	custom          string
 	pattern         *string
