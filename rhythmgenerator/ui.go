@@ -7,8 +7,6 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-var isPlaying bool
-
 type Widgets struct {
 	stepsInput          *widget.Entry
 	beatsInput          *widget.Entry
@@ -36,10 +34,11 @@ type Parameters struct {
 	steps           int
 	beats           int
 	bpm             int
+	inversionDegree int
 	euclidean       string
 	custom          string
 	pattern         *string
-	inversionDegree int
+	isPlaying       bool
 }
 
 type PreviousState struct {
@@ -63,7 +62,7 @@ func Ui() {
 	w.stepsInput = widget.NewEntry()
 	w.stepsInput.SetPlaceHolder("Steps")
 	w.stepsInput.OnSubmitted = func(content string) {
-		if isPlaying {
+		if p.isPlaying {
 			prepForPlay(w, p, prev)
 		}
 
@@ -72,7 +71,7 @@ func Ui() {
 	w.beatsInput = widget.NewEntry()
 	w.beatsInput.SetPlaceHolder("Beats")
 	w.beatsInput.OnSubmitted = func(content string) {
-		if isPlaying {
+		if p.isPlaying {
 			prepForPlay(w, p, prev)
 		}
 	}
@@ -80,12 +79,12 @@ func Ui() {
 	w.bpmInput = widget.NewEntry()
 	w.bpmInput.SetPlaceHolder("BPM")
 	w.bpmInput.OnSubmitted = func(content string) {
-		if isPlaying {
+		if p.isPlaying {
 			var err *Error
 			_, _, p.bpm, err = convertInput(w)
 			if err != nil {
-				stop()
-				err.handleInputErrors(w)
+				stop(p)
+				err.handleInputErrors(w, p)
 			} else {
 				changeBpmChan <- struct{}{}
 			}
@@ -93,7 +92,7 @@ func Ui() {
 	}
 
 	w.doubletimeCheck = widget.NewCheck("Double Time", func(value bool) {
-		if isPlaying {
+		if p.isPlaying {
 			changeBpmChan <- struct{}{}
 		}
 	})
@@ -151,7 +150,7 @@ func Ui() {
 	})
 
 	w.stopButton = widget.NewButton("Stop", func() {
-		stop()
+		stop(p)
 		updateButtonStateStop(w)
 	})
 

@@ -31,7 +31,7 @@ func play(p *Parameters, w *Widgets) {
 	ticker := time.NewTicker(time.Duration(60000/bpm) * time.Millisecond)
 
 	var barCount int
-	isPlaying = true
+	p.isPlaying = true
 	for {
 		barCount++
 		w.barLabel.SetText(fmt.Sprint("Bar: ", barCount))
@@ -76,9 +76,9 @@ func newBpm(w *Widgets, bpm int) int {
 	return bpm
 }
 
-func stop() {
+func stop(p *Parameters) {
 	stopPlayChan <- struct{}{}
-	isPlaying = false
+	p.isPlaying = false
 }
 
 func makeBuffer(file string) *beep.Buffer {

@@ -5,7 +5,7 @@ func prepForPlay(w *Widgets, p *Parameters, prev *PreviousState) {
 		var e *Error
 		e = callGenerators(w, p)
 		if e != nil {
-			e.handleInputErrors(w)
+			e.handleInputErrors(w, p)
 			return
 		}
 		updatePrev(w, prev)
