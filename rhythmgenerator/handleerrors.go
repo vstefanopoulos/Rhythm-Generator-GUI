@@ -14,8 +14,8 @@ func handleErrors(w *Widgets, p *Parameters, prev *PreviousState) *Error {
 		}
 		return e
 	}
-	go updatePrev(w, prev)
-	go w.updateInversionLabel(p.inversionDegree)
-	go w.updatePatternLabel(*p.pattern)
+	updatePrev(w, prev)
+	w.updateInversionLabel(p.inversionDegree)
+	w.updatePatternLabel(*p.pattern)
 	return nil
 }

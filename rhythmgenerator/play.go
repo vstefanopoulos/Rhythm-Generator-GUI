@@ -19,6 +19,7 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 	if *p.pattern == "" {
 		return
 	}
+	w.updatePatternLabel(*p.pattern)
 	p.beat = newBeat(w, p.bpm)
 	click := make(chan struct{})
 	go clock(p, &click)

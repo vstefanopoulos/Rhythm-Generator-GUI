@@ -6,7 +6,7 @@ func invertRight(pattern *string, w *Widgets, p *Parameters) {
 	invertedPattern := *pattern
 	invertedPattern = invertedPattern[len(invertedPattern)-1:] + invertedPattern[0:len(invertedPattern)-1]
 	p.inversionDegree = (p.inversionDegree + 1) % len(invertedPattern)
-	go w.updateInversionLabel(p.inversionDegree)
+	w.updateInversionLabel(p.inversionDegree)
 	*pattern = invertedPattern
 	w.updatePatternLabel(*p.pattern)
 }
@@ -15,7 +15,7 @@ func invertLeft(pattern *string, w *Widgets, p *Parameters) {
 	invertedPattern := *pattern
 	invertedPattern = invertedPattern[1:] + invertedPattern[0:1]
 	p.inversionDegree = (p.inversionDegree - 1) % len(invertedPattern)
-	go w.updateInversionLabel(p.inversionDegree)
+	w.updateInversionLabel(p.inversionDegree)
 	*pattern = invertedPattern
 	w.updatePatternLabel(*p.pattern)
 }
