@@ -4,13 +4,7 @@ const onSet = 'X'
 const offSet = 'o'
 const fill = 'x'
 
-func callGenerators(w *Widgets, p *Parameters) *Error {
-	var err *Error
-	p.steps, p.beats, p.bpm, err = convertInput(w)
-
-	if err != nil {
-		return err
-	}
+func callGenerators(w *Widgets, p *Parameters) {
 
 	p.euclidean = euclideanGenerate(p.steps, p.beats)
 	p.custom = customGenerate(p.steps, p.beats)
@@ -32,7 +26,9 @@ func callGenerators(w *Widgets, p *Parameters) *Error {
 	if p.inversionDegree != 0 {
 		*p.pattern = reInvert(*p.pattern, p)
 	}
-	return nil
+	go w.updatePatternLabel(*p.pattern)
+	go w.updateInversionLabel(p.inversionDegree)
+	return
 }
 
 func chooseAlgorithm(w *Widgets, p *Parameters, t bool) {

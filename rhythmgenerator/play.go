@@ -19,9 +19,7 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 	if *p.pattern == "" {
 		return
 	}
-	var bpm int
-	bpm = newBpm(w, p.bpm)
-	p.beat = 6000000 / bpm
+	p.beat = newBeat(w, p.bpm)
 	click := make(chan struct{})
 	go clock(p, &click)
 	var barCount int
@@ -31,8 +29,7 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 		w.barLabel.SetText(fmt.Sprint("Bar: ", barCount))
 		select {
 		case <-changeBpmChan:
-			bpm = newBpm(w, p.bpm)
-			newBeat := 6000000 / bpm
+			newBeat := newBeat(w, p.bpm)
 			select {
 			case <-click:
 				p.beat = newBeat
@@ -64,11 +61,13 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 	}
 }
 
-func newBpm(w *Widgets, bpm int) int {
+func newBeat(w *Widgets, bpm int) int {
 	if w.doubletimeCheck.Checked {
-		return bpm * 2
+		bpm *= 4
+	} else {
+		bpm *= 2
 	}
-	return bpm
+	return 6000000 / bpm
 }
 
 func stop(p *Parameters) {

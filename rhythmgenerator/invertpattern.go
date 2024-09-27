@@ -1,14 +1,12 @@
 package rhythmgenerator
 
-import "fmt"
-
 // invertRight and invertLeft invert the pattern string by one step
 // and update the pattern pointer and label
 func invertRight(pattern *string, w *Widgets, p *Parameters) {
 	invertedPattern := *pattern
 	invertedPattern = invertedPattern[len(invertedPattern)-1:] + invertedPattern[0:len(invertedPattern)-1]
 	p.inversionDegree = (p.inversionDegree + 1) % len(invertedPattern)
-	w.inversionLabel.SetText(fmt.Sprintf("Inversion Status: %v", p.inversionDegree))
+	go w.updateInversionLabel(p.inversionDegree)
 	*pattern = invertedPattern
 	w.updatePatternLabel(*p.pattern)
 }
@@ -17,7 +15,7 @@ func invertLeft(pattern *string, w *Widgets, p *Parameters) {
 	invertedPattern := *pattern
 	invertedPattern = invertedPattern[1:] + invertedPattern[0:1]
 	p.inversionDegree = (p.inversionDegree - 1) % len(invertedPattern)
-	w.inversionLabel.SetText(fmt.Sprintf("Inversion Status: %v", p.inversionDegree))
+	go w.updateInversionLabel(p.inversionDegree)
 	*pattern = invertedPattern
 	w.updatePatternLabel(*p.pattern)
 }

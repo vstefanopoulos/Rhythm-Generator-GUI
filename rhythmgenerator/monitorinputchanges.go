@@ -9,7 +9,9 @@ func changedInput(w *Widgets, prev *PreviousState) bool {
 }
 
 func updatePrev(w *Widgets, prev *PreviousState) {
-	prev.stepsInput = w.stepsInput.Text
-	prev.beatsInput = w.beatsInput.Text
-	prev.bpmInput = w.bpmInput.Text
+	if changedInput(w, prev) {
+		prev.stepsInput = w.stepsInput.Text
+		prev.beatsInput = w.beatsInput.Text
+		prev.bpmInput = w.bpmInput.Text
+	}
 }

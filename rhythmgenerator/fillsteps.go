@@ -85,6 +85,5 @@ func undofillSteps(w *Widgets, pattern *string) {
 		}
 	}
 	w.updatePatternLabel(newPattern)
-	w.patternLabel.SetText(newPattern)
 	*pattern = newPattern
 }

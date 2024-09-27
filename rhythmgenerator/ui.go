@@ -80,8 +80,12 @@ func Ui() {
 	w.stepsInput = widget.NewEntry()
 	w.stepsInput.SetPlaceHolder("Steps")
 	w.stepsInput.OnSubmitted = func(content string) {
+		e := handleErrors(w, p, prev)
+		if e != nil {
+			return
+		}
 		if p.isPlaying {
-			prepForPlay(w, p, prev)
+			callGenerators(w, p)
 		}
 
 	}
@@ -89,27 +93,32 @@ func Ui() {
 	w.beatsInput = widget.NewEntry()
 	w.beatsInput.SetPlaceHolder("Beats")
 	w.beatsInput.OnSubmitted = func(content string) {
+		e := handleErrors(w, p, prev)
+		if e != nil {
+			return
+		}
 		if p.isPlaying {
-			prepForPlay(w, p, prev)
+			callGenerators(w, p)
 		}
 	}
 
 	w.bpmInput = widget.NewEntry()
 	w.bpmInput.SetPlaceHolder("BPM")
 	w.bpmInput.OnSubmitted = func(content string) {
+		e := handleErrors(w, p, prev)
+		if e != nil {
+			return
+		}
 		if p.isPlaying {
-			var err *Error
-			_, _, p.bpm, err = convertInput(w)
-			if err != nil {
-				stop(p)
-				err.handleInputErrors(w, p)
-			} else {
-				changeBpmChan <- struct{}{}
-			}
+			changeBpmChan <- struct{}{}
 		}
 	}
 
 	w.doubletimeCheck = widget.NewCheck("Double Time", func(value bool) {
+		e := handleErrors(w, p, prev)
+		if e != nil {
+			return
+		}
 		if p.isPlaying {
 			go func() {
 				changeBpmChan <- struct{}{}
@@ -122,6 +131,10 @@ func Ui() {
 	w.muteOffsetsCheck = widget.NewCheck("Mute Offsets", func(value bool) {})
 
 	w.algorithmTypeCheck = widget.NewCheck("Custom Algorithm", func(value bool) {
+		e := handleErrors(w, p, prev)
+		if e != nil {
+			return
+		}
 		if value {
 			chooseAlgorithm(w, p, true)
 		} else {
@@ -130,6 +143,10 @@ func Ui() {
 	})
 
 	w.removeSymmetryCheck = widget.NewCheck("Remove Symetry", func(value bool) {
+		e := handleErrors(w, p, prev)
+		if e != nil {
+			return
+		}
 		if value {
 			removeSymmetry(w, *p.pattern, p)
 		} else {
@@ -138,6 +155,10 @@ func Ui() {
 	})
 
 	w.fillCheck = widget.NewCheck("Fill Steps", func(value bool) {
+		e := handleErrors(w, p, prev)
+		if e != nil {
+			return
+		}
 		if *p.pattern != "" {
 			switch value {
 			case true:
@@ -165,7 +186,12 @@ func Ui() {
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
-		prepForPlay(w, p, prev)
+		e := handleErrors(w, p, prev)
+		if e != nil {
+			return
+		}
+		callGenerators(w, p)
+		updateButtonStatePlay(w)
 		go play(p, w, buf)
 	})
 

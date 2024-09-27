@@ -1,5 +1,7 @@
 package rhythmgenerator
 
+import "fmt"
+
 func updateButtonStatePlay(w *Widgets) {
 	w.invertLeftButton.Enable()
 	w.invertRightButton.Enable()
@@ -53,4 +55,8 @@ func (w *Widgets) updatePatternLabel(pattern string) {
 		pattern = pattern[:47] + "..."
 	}
 	w.patternLabel.SetText(pattern)
+}
+
+func (w *Widgets) updateInversionLabel(degree int) {
+	w.inversionLabel.SetText(fmt.Sprintf("Inversion Status: %v", degree))
 }
