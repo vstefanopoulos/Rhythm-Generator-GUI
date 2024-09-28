@@ -1,21 +1,22 @@
 package rhythmgenerator
 
-func handleErrors(w *Widgets, p *Parameters, prev *PreviousState) *Error {
-	var e *Error
-	e = convertInput(w, p)
-	updatePrev(w, prev)
-	if e != nil {
-		initialButtonState(w)
-		w.inversionLabel.SetText(e.Message)
-		if e.Solution != "" {
-			w.patternLabel.SetText(e.Solution)
+type Error struct {
+	Message  string
+	Solution string
+}
+
+func handleErrors(w *Widgets, p *Parameters) *Error {
+	err := convertInput(w, p)
+	if err != nil {
+		w.errLabel.Text = err.Message
+		if err.Solution != "" {
+			w.errSolutionLabel.Text = err.Solution
 		}
-		if p.isPlaying {
-			stop(p)
-		}
-		return e
+		return err
 	}
-	w.updateInversionLabel(p.inversionDegree)
-	w.updatePatternLabel(*p.pattern)
+	w.errLabel.Text = ""
+	w.errLabel.Refresh()
+	w.errSolutionLabel.Text = ""
+	w.errSolutionLabel.Refresh()
 	return nil
 }

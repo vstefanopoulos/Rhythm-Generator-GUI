@@ -19,7 +19,6 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 	if *p.pattern == "" {
 		return
 	}
-	w.updatePatternLabel(*p.pattern)
 	p.beat = newBeat(w, p.bpm)
 	click := make(chan struct{})
 	go clock(p, &click)
@@ -27,7 +26,8 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 	p.isPlaying = true
 	for {
 		barCount++
-		w.barLabel.SetText(fmt.Sprint("Bar: ", barCount))
+		w.barLabel.Text = (fmt.Sprint("Bar: ", barCount))
+		w.barLabel.Refresh()
 		select {
 		case <-changeBpmChan:
 			newBeat := newBeat(w, p.bpm)

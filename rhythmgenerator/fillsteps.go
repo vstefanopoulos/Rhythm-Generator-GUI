@@ -1,89 +1,58 @@
-// fillSteps adds a lower case 'x' on every "Xoo" block
+// FillSteps adds a lower case 'x' on every "Xoo" block
 // if there is a pattern of "Xooo" or more 'o's it calls
 // Euclidean on this block and makes all 'x's but the first
 // a lower case 'x'. FillSteps only works on uninverted patterns
-// that begin with an 'X' which is why every pattern has to be
-// uninverted and then reinverted.
+// that begin with an 'X'.
 
 package rhythmgenerator
 
-func fillSteps(w *Widgets, p *Parameters, pattern *string) {
-	if *p.pattern == "" {
-		return
-	} else if !(p.steps/p.beats > 1) {
-		filledOk(w, false)
-		return
+func fillSteps(steps, beats int, pattern string) string {
+	if pattern == "" {
+		return ""
+	} else if !(steps/beats > 1) {
+		return ""
 	}
 
-	var finalPattern string
 	var count int
 	var filledSteps bool
 	parts := []int{}
-	newPattern := *pattern
 
-	if p.inversionDegree != 0 {
-		newPattern = unInvert(newPattern, p)
-	}
-
-	for i, j := range newPattern {
+	for i, j := range pattern {
 		if j == onSet && i != 0 {
 			parts = append(parts, i-count)
 			count = i
 		}
 
-		if i == len(newPattern)-1 {
+		if i == len(pattern)-1 {
 			parts = append(parts, i+1-count)
 		}
 	}
-
+	var filledPattern string
 	for _, j := range parts {
 		switch {
 		case j == 1:
-			finalPattern += string(onSet)
+			filledPattern += string(onSet)
 		case j == 2:
-			finalPattern += string(onSet) + string(offSet)
+			filledPattern += string(onSet) + string(offSet)
 		case j == 3:
-			finalPattern += string(onSet) + string(offSet) + string(fill)
+			filledPattern += string(onSet) + string(offSet) + string(fill)
 			filledSteps = true
 		case j > 3:
 			part := euclideanGenerate(j, j/2)
 			for i, char := range part {
 				if i != 0 && char == onSet {
-					finalPattern += string(fill)
+					filledPattern += string(fill)
 				} else {
-					finalPattern += string(char)
+					filledPattern += string(char)
 				}
 			}
 			filledSteps = true
 		}
 	}
 
-	if p.inversionDegree != 0 && filledSteps {
-		finalPattern = reInvert(finalPattern, p)
-	}
-
 	if filledSteps {
-		w.updatePatternLabel(finalPattern)
-		*pattern = finalPattern
-		filledOk(w, true)
+		return filledPattern
 	} else {
-		filledOk(w, false)
+		return ""
 	}
-}
-
-func undofillSteps(w *Widgets, pattern *string) {
-	if *pattern == "" {
-		return
-	}
-	var filledPattern string = *pattern
-	var newPattern string
-	for _, char := range filledPattern {
-		if char == fill {
-			newPattern += string(offSet)
-		} else {
-			newPattern += string(char)
-		}
-	}
-	*pattern = newPattern
-	w.updatePatternLabel(newPattern)
 }

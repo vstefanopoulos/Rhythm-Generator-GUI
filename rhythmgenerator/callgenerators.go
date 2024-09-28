@@ -5,51 +5,37 @@ const offSet = 'o'
 const fill = 'x'
 
 func callGenerators(w *Widgets, p *Parameters) {
-
-	p.euclidean = euclideanGenerate(p.steps, p.beats)
-	p.custom = customGenerate(p.steps, p.beats)
+	var pattern string
 
 	if w.algorithmTypeCheck.Checked {
-		*p.pattern = p.custom
+		pattern = customGenerate(p.steps, p.beats)
 	} else {
-		*p.pattern = p.euclidean
+		pattern = euclideanGenerate(p.steps, p.beats)
 	}
 
 	if w.removeSymmetryCheck.Checked {
-		removeSymmetry(w, *p.pattern, p)
+		if temp := removeSymmetry(p.steps, p.beats, pattern); temp != "" {
+			pattern = temp
+			defer rsOk(w, true)
+		} else {
+			defer rsOk(w, false)
+		}
 	}
 
 	if w.fillCheck.Checked {
-		fillSteps(w, p, p.pattern)
+		if temp := fillSteps(p.steps, p.beats, pattern); temp != "" {
+			pattern = temp
+			defer filledOk(w, true)
+		} else {
+			defer filledOk(w, false)
+		}
 	}
 
 	if p.inversionDegree != 0 {
-		*p.pattern = reInvert(*p.pattern, p)
+		pattern = invertByDegree(pattern, p)
 	}
+	*p.pattern = pattern
 	w.updatePatternLabel(*p.pattern)
 	w.updateInversionLabel(p.inversionDegree)
 	return
-}
-
-func chooseAlgorithm(w *Widgets, p *Parameters, t bool) {
-	var pattern string
-
-	if t {
-		pattern = p.custom
-	} else {
-		pattern = p.euclidean
-	}
-
-	pattern = reInvert(pattern, p)
-
-	if w.removeSymmetryCheck.Checked {
-		removeSymmetry(w, *p.pattern, p)
-	}
-
-	if w.fillCheck.Checked {
-		fillSteps(w, p, &pattern)
-	}
-
-	*p.pattern = pattern
-	w.updatePatternLabel(*p.pattern)
 }

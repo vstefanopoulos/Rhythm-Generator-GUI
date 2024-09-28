@@ -1,6 +1,8 @@
 package rhythmgenerator
 
 import (
+	"image/color"
+
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -17,10 +19,12 @@ type Widgets struct {
 	invertRightButton   *widget.Button
 	invertLeftButton    *widget.Button
 	inversionLabel      *widget.Label
-	barLabel            *widget.Label
-	patternLabel        *widget.Label
-	fillStatus          *widget.Label
-	RsStatus            *widget.Label
+	barLabel            *canvas.Text
+	patternLabel        *canvas.Text
+	fillStatus          *canvas.Text
+	rsStatus            *canvas.Text
+	errLabel            *canvas.Text
+	errSolutionLabel    *canvas.Text
 	doubletimeCheck     *widget.Check
 	muteOffsetsCheck    *widget.Check
 	muteFillsCheck      *widget.Check
@@ -52,15 +56,8 @@ type Buffer struct {
 	click         *beep.Buffer
 }
 
-type PreviousState struct {
-	stepsInput string
-	beatsInput string
-	bpmInput   string
-}
-
 func Ui() {
 	w := &Widgets{}
-	prev := &PreviousState{}
 	p := &Parameters{}
 	p.pattern = new(string)
 	buf := &Buffer{
@@ -80,42 +77,40 @@ func Ui() {
 	w.stepsInput = widget.NewEntry()
 	w.stepsInput.SetPlaceHolder("Steps")
 	w.stepsInput.OnSubmitted = func(content string) {
-		e := handleErrors(w, p, prev)
+		e := handleErrors(w, p)
 		if e != nil {
 			return
 		}
-		if p.isPlaying {
-			callGenerators(w, p)
-		}
-
+		callGenerators(w, p)
 	}
 
 	w.beatsInput = widget.NewEntry()
 	w.beatsInput.SetPlaceHolder("Beats")
 	w.beatsInput.OnSubmitted = func(content string) {
-		e := handleErrors(w, p, prev)
+		e := handleErrors(w, p)
 		if e != nil {
 			return
 		}
-		if p.isPlaying {
-			callGenerators(w, p)
-		}
+		callGenerators(w, p)
 	}
 
 	w.bpmInput = widget.NewEntry()
 	w.bpmInput.SetPlaceHolder("BPM")
 	w.bpmInput.OnSubmitted = func(content string) {
-		e := handleErrors(w, p, prev)
+		e := handleErrors(w, p)
 		if e != nil {
 			return
 		}
 		if p.isPlaying {
 			changeBpmChan <- struct{}{}
+		} else {
+			callGenerators(w, p)
 		}
 	}
 
+	// C H E C K  B O X E S - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	w.doubletimeCheck = widget.NewCheck("Double Time", func(value bool) {
-		e := handleErrors(w, p, prev)
+		e := handleErrors(w, p)
 		if e != nil {
 			return
 		}
@@ -126,57 +121,36 @@ func Ui() {
 		}
 	})
 
-	w.clickCheck = widget.NewCheck("Click", func(value bool) {})
-	w.accentDownbeatCheck = widget.NewCheck("Accent DownBeat", func(value bool) {})
-	w.muteOffsetsCheck = widget.NewCheck("Mute Offsets", func(value bool) {})
-
 	w.algorithmTypeCheck = widget.NewCheck("Custom Algorithm", func(value bool) {
-		e := handleErrors(w, p, prev)
+		e := handleErrors(w, p)
 		if e != nil {
 			return
 		}
-		if value {
-			chooseAlgorithm(w, p, true)
-		} else {
-			chooseAlgorithm(w, p, false)
-		}
+		callGenerators(w, p)
 	})
 
 	w.removeSymmetryCheck = widget.NewCheck("Remove Symetry", func(value bool) {
-		e := handleErrors(w, p, prev)
+		e := handleErrors(w, p)
 		if e != nil {
 			return
 		}
-		if value {
-			removeSymmetry(w, *p.pattern, p)
-		} else {
-			fallBack(w, p)
-		}
+		callGenerators(w, p)
 	})
 
 	w.fillCheck = widget.NewCheck("Fill Steps", func(value bool) {
-		e := handleErrors(w, p, prev)
+		e := handleErrors(w, p)
 		if e != nil {
 			return
 		}
-		if *p.pattern != "" {
-			switch value {
-			case true:
-				fillSteps(w, p, p.pattern)
-			case false:
-				undofillSteps(w, p.pattern)
-			}
-		}
+		callGenerators(w, p)
 	})
 
+	w.clickCheck = widget.NewCheck("Click", func(value bool) {})
+	w.accentDownbeatCheck = widget.NewCheck("Accent DownBeat", func(value bool) {})
+	w.muteOffsetsCheck = widget.NewCheck("Mute Offsets", func(value bool) {})
 	w.muteFillsCheck = widget.NewCheck("Mute Fills", func(value bool) {})
 
-	w.inversionLabel = widget.NewLabel("")
-	w.fillStatus = widget.NewLabel("Fill")
-	w.RsStatus = widget.NewLabel("Rs")
-	w.patternLabel = widget.NewLabel("")
-	w.barLabel = widget.NewLabel("")
-
+	// B U T T O N S - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	w.invertRightButton = widget.NewButton("Invert Right", func() {
 		invertRight(p.pattern, w, p)
 	})
@@ -186,7 +160,7 @@ func Ui() {
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
-		e := handleErrors(w, p, prev)
+		e := handleErrors(w, p)
 		if e != nil {
 			return
 		}
@@ -200,17 +174,36 @@ func Ui() {
 		updateButtonStateStop(w)
 	})
 
+	// S T A T U S  L A B E L S - - - - - - - - - - - - - - - - - - - - - - - -
+	w.inversionLabel = widget.NewLabel("")
+
+	w.fillStatus = canvas.NewText("", color.RGBA{0, 255, 0, 200})
+	w.rsStatus = canvas.NewText("", color.RGBA{0, 255, 0, 200})
+
+	w.barLabel = canvas.NewText("", color.RGBA{255, 0, 0, 200})
+	w.barLabel.TextSize = 15
+	w.patternLabel = canvas.NewText("", color.RGBA{0, 255, 0, 200})
+	w.patternLabel.TextSize = 15
+
+	// E R R  L A B E L S - - - - - - - - - - - - - - - - - - - - -
+	w.errLabel = canvas.NewText("", color.RGBA{255, 0, 0, 255})
+	w.errSolutionLabel = canvas.NewText("", color.RGBA{255, 0, 0, 255})
+
 	initialButtonState(w)
 
+	// C O N T A I N E R S - - - - - - - - - - - - - - - - - - - - - - - - -
 	inputBoxCol := container.NewVBox(w.beatsInput, w.stepsInput, w.bpmInput)
 	tempoBoxesRow := container.NewHBox(w.doubletimeCheck, w.clickCheck, w.accentDownbeatCheck, w.muteOffsetsCheck)
 	playStopCol := container.NewVBox(w.playButton, w.stopButton)
-	algBoxesRow := container.NewHBox(w.algorithmTypeCheck, w.removeSymmetryCheck, w.fillCheck, w.muteFillsCheck)
-	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton, w.inversionLabel, w.RsStatus, w.fillStatus)
+	algMuteRow := container.NewHBox(w.algorithmTypeCheck, w.removeSymmetryCheck, w.rsStatus)
+	simFillRow := container.NewHBox(w.fillCheck, w.fillStatus, w.muteFillsCheck)
+	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton, w.inversionLabel)
 	PatBarRow := container.NewHBox(w.patternLabel, w.barLabel)
-	allBoxes := container.NewVBox(banner, inputBoxCol, tempoBoxesRow, playStopCol, algBoxesRow,
-		invertButtonRow, PatBarRow)
+	errRow := container.NewVBox(w.errLabel, w.errSolutionLabel)
+	allBoxes := container.NewVBox(banner, inputBoxCol, tempoBoxesRow, playStopCol, algMuteRow, simFillRow,
+		invertButtonRow, PatBarRow, errRow)
 	content := container.NewHBox(allBoxes)
+
 	window.SetContent(content)
 	window.ShowAndRun()
 }
