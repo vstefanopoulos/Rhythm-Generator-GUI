@@ -33,6 +33,7 @@ type Widgets struct {
 	clickCheck          *widget.Check
 	accentDownbeatCheck *widget.Check
 	removeSymmetryCheck *widget.Check
+	addKick             *widget.Check
 }
 
 type Parameters struct {
@@ -62,6 +63,7 @@ func Ui() {
 	p := &Parameters{}
 	p.pattern = new(string)
 	buf := &Buffer{
+		kick:          makeBuffer("./wav/kick.wav"),
 		snr:           makeBuffer("./wav/rim.wav"),
 		side:          makeBuffer("./wav/side.wav"),
 		hh:            makeBuffer("./wav/hh.wav"),
@@ -145,6 +147,14 @@ func Ui() {
 		callGenerators(w, p)
 	})
 
+	w.addKick = widget.NewCheck("Add Kick", func(value bool) {
+		e := handleErrors(w, p)
+		if e != nil {
+			return
+		}
+		callGenerators(w, p)
+	})
+
 	w.clickCheck = widget.NewCheck("Click", func(value bool) {})
 	w.accentDownbeatCheck = widget.NewCheck("Accent DownBeat", func(value bool) {})
 	w.muteOffsetsCheck = widget.NewCheck("Mute Offsets", func(value bool) {})
@@ -196,7 +206,7 @@ func Ui() {
 	tempoBoxesRow := container.NewHBox(w.doubletimeCheck, w.clickCheck, w.accentDownbeatCheck, w.muteOffsetsCheck)
 	playStopCol := container.NewVBox(w.playButton, w.stopButton)
 	algMuteRow := container.NewHBox(w.algorithmTypeCheck, w.removeSymmetryCheck, w.rsStatus)
-	simFillRow := container.NewHBox(w.fillCheck, w.fillStatus, w.muteFillsCheck)
+	simFillRow := container.NewHBox(w.fillCheck, w.fillStatus, w.muteFillsCheck, w.addKick)
 	invertButtonRow := container.NewHBox(w.invertLeftButton, w.invertRightButton, w.inversionLabel)
 	PatBarRow := container.NewHBox(w.patternLabel, w.barLabel)
 	errRow := container.NewVBox(w.errLabel, w.errSolutionLabel)

@@ -119,6 +119,10 @@ func makeBuffer(file string) *beep.Buffer {
 
 func playSpeaker(char rune, w *Widgets, buf *Buffer) {
 	switch {
+	case char == 'O':
+		kick := buf.kick.Streamer(0, buf.kick.Len())
+		speaker.Play(kick)
+		speaker.Play(buf.hh.Streamer(0, buf.hh.Len()))
 	case char == 'X':
 		speaker.Play(buf.snr.Streamer(0, buf.snr.Len()))
 	case char == 'x':
