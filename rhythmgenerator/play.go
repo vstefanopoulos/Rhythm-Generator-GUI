@@ -35,19 +35,15 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 		}()
 		select {
 		case <-changeBpmChan:
-			fmt.Println("case: changeBpmChan")
 			newBeat := newBeat(w, p.bpm)
 			select {
 			case <-click:
 				p.beat = newBeat
-				// p.clockBuffer = newBeat - 10
 			}
 		default:
-			fmt.Println("case: default")
 			for i, char := range *p.pattern {
 				select {
 				case <-click:
-					fmt.Println("case: click")
 					go func() {
 						if w.clickCheck.Checked {
 							switch {
