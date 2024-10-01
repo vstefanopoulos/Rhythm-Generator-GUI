@@ -34,6 +34,7 @@ func callGenerators(w *Widgets, p *Parameters) {
 	if p.inversionDegree != 0 {
 		pattern = invertByDegree(pattern, p)
 	}
+
 	*p.pattern = pattern
 	w.updatePatternLabel(*p.pattern)
 	w.updateInversionLabel(p.inversionDegree)

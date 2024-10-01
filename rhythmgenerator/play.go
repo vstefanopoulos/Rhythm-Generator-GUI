@@ -20,40 +20,47 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 		return
 	}
 	p.beat = newBeat(w, p.bpm)
+	p.clockBuffer = p.beat - 10
 	click := make(chan struct{})
 	go clock(p, &click)
 	var barCount int
+	var doubleTime bool
 	p.isPlaying = true
 	for {
-		barCount++
-		w.barLabel.Text = (fmt.Sprint("Bar: ", barCount))
-		w.barLabel.Refresh()
+		go func() {
+			doubleTime = w.doubletimeCheck.Checked
+			barCount++
+			w.barLabel.Text = (fmt.Sprint("Bar: ", barCount))
+			w.barLabel.Refresh()
+		}()
 		select {
 		case <-changeBpmChan:
+			fmt.Println("case: changeBpmChan")
 			newBeat := newBeat(w, p.bpm)
 			select {
 			case <-click:
 				p.beat = newBeat
-				p.tic = newBeat - 100
+				// p.clockBuffer = newBeat - 10
 			}
-
 		default:
+			fmt.Println("case: default")
 			for i, char := range *p.pattern {
 				select {
 				case <-click:
+					fmt.Println("case: click")
 					go func() {
 						if w.clickCheck.Checked {
 							switch {
 							case i == 0 && w.accentDownbeatCheck.Checked:
 								playClick(buf.clickDownBeat)
-							case w.doubletimeCheck.Checked && i%4 == 0:
+							case doubleTime && i%4 == 0:
 								playClick(buf.click)
-							case !w.doubletimeCheck.Checked && i%2 == 0:
+							case !doubleTime && i%2 == 0:
 								playClick(buf.click)
 							}
 						}
 					}()
-					go playPattern(char, w, buf.on, buf.filler, buf.off)
+					go playSpeaker(char, w, buf)
 				case <-stopPlayChan:
 					return
 				}
@@ -78,14 +85,14 @@ func stop(p *Parameters) {
 }
 
 func clock(p *Parameters, click *chan struct{}) {
-	masterClock := time.NewTicker(10000 * time.Nanosecond)
+	masterClock := time.NewTicker(10 * time.Microsecond)
 	for {
 		select {
 		case <-masterClock.C:
-			p.tic++
-			if p.tic == p.beat {
+			p.clockBuffer++
+			if p.clockBuffer == p.beat {
 				*click <- struct{}{}
-				p.tic = 0
+				p.clockBuffer = 0
 			}
 		case <-stopClockChan:
 			masterClock.Stop()
@@ -113,31 +120,22 @@ func makeBuffer(file string) *beep.Buffer {
 	return buffer
 }
 
-func playPattern(char rune, w *Widgets, on, filler, off *beep.Buffer) {
+func playSpeaker(char rune, w *Widgets, buf *Buffer) {
 	switch {
 	case char == 'X':
-		go func() {
-			snr := on.Streamer(0, on.Len())
-			speaker.Play(snr)
-		}()
+		speaker.Play(buf.snr.Streamer(0, buf.snr.Len()))
 	case char == 'x':
-		go func() {
-			if !w.muteFillsCheck.Checked {
-				side := filler.Streamer(0, filler.Len())
-				speaker.Play(side)
-			} else {
-				return
-			}
-		}()
+		if !w.muteFillsCheck.Checked {
+			speaker.Play(buf.side.Streamer(0, buf.side.Len()))
+		} else {
+			return
+		}
 	case char == 'o':
-		go func() {
-			if !w.muteOffsetsCheck.Checked {
-				hh := off.Streamer(0, off.Len())
-				speaker.Play(hh)
-			} else {
-				return
-			}
-		}()
+		if !w.muteOffsetsCheck.Checked {
+			speaker.Play(buf.hh.Streamer(0, buf.hh.Len()))
+		} else {
+			return
+		}
 	}
 }
 

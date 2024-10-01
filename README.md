@@ -36,7 +36,7 @@ While playing you can toggle the mute offsets checkbox. If enabled the offsets a
 
 ### Play and Stop 
 
-When you hit play you see the type of Pattern ie `Pattern: Custom Filled Algorithm`. The pattern is repeated until stop is pressed and the iteration count is indicated on the `bar` label. Below that you can see the notation of the generated pattern with `X` indicating the beats, `o` the offsets and `x` the filled steps. The `X`'s trigger a snare rimshot sound, the `o`'s trigger a closed hi hat sound and the `x`'s trigger a snare side stick sound. After the playback is stopped you can restart it by pressing play again or first change any of the parameters and then play the new pattern.
+When you hit play audition the generated pattern is repeated until stop is pressed and the iteration count is indicated on the `bar` label. Below that you can see the notation of the generated pattern with `X` indicating the beats, `o` the offsets and `x` the filled steps. The `X`'s trigger a snare rimshot sound, the `o`'s trigger a closed hi hat sound and the `x`'s trigger a snare side stick sound. After the playback is stopped you can restart it by pressing play again or change any of the parameters and then play the new pattern.
 
 ### Choose Algorithm Type
 
@@ -44,7 +44,7 @@ By default the algorithm for pattern generation is Euclidean Rhythm. You can cha
 
 ### Remove Symmetry
 
-The `Remove Symmetry` option breaks the symmetry of a pattern if there is any by inverting the last part of the pattern. This produces more musically meaningful results. To see that in action dial `Steps: 15` and `Beats: 6` in your preferred Bpm and compare that result. The Rs box remains ticked in the UI if symmetry not removed and `✓Ok` appears next to it if symmetry was removed. If not applicable but remove symmetry checked the algorithm will be apllied again to the next generated pattern
+The `Remove Symmetry` option breaks the symmetry of a pattern (if there is any) by inverting the last part of the pattern. This produces more musically meaningful results. To see that in action dial `Steps: 15` and `Beats: 6` in your preferred Bpm and compare that result. The Rs box remains ticked in the UI if symmetry not removed and `✓Ok` appears next to it if symmetry was removed. If not applicable but remove symmetry checked the algorithm will be apllied again to the next generated pattern
 
 ### Fill Steps:  
 

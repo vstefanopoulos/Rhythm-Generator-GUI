@@ -41,7 +41,7 @@ type Parameters struct {
 	bpm             int
 	inversionDegree int
 	beat            int
-	tic             int
+	clockBuffer     int
 	euclidean       string
 	custom          string
 	pattern         *string
@@ -49,11 +49,12 @@ type Parameters struct {
 }
 
 type Buffer struct {
-	on            *beep.Buffer
-	off           *beep.Buffer
-	filler        *beep.Buffer
+	snr           *beep.Buffer
+	side          *beep.Buffer
+	hh            *beep.Buffer
 	clickDownBeat *beep.Buffer
 	click         *beep.Buffer
+	kick          *beep.Buffer
 }
 
 func Ui() {
@@ -61,13 +62,12 @@ func Ui() {
 	p := &Parameters{}
 	p.pattern = new(string)
 	buf := &Buffer{
-		on:            makeBuffer("./wav/rim.wav"),
-		filler:        makeBuffer("./wav/side.wav"),
-		off:           makeBuffer("./wav/hh.wav"),
+		snr:           makeBuffer("./wav/rim.wav"),
+		side:          makeBuffer("./wav/side.wav"),
+		hh:            makeBuffer("./wav/hh.wav"),
 		clickDownBeat: makeBuffer("./wav/clickLow.wav"),
 		click:         makeBuffer("./wav/click.wav"),
 	}
-
 	RGgui := app.New()
 	window := RGgui.NewWindow("Rhythm Generator")
 
