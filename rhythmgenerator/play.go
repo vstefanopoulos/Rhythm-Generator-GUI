@@ -39,6 +39,7 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 			select {
 			case <-click:
 				p.beat = newBeat
+				p.clockBuffer = p.beat - 10
 			}
 		default:
 			for i, char := range *p.pattern {
