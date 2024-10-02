@@ -19,13 +19,13 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 	if *p.pattern == "" {
 		return
 	}
-	p.beat = newBeat(w, p.bpm)
-	p.clockBuffer = p.beat - 10
-	click := make(chan struct{})
-	go clock(p, &click)
+	p.isPlaying = true
 	var barCount int
 	var doubleTime bool
-	p.isPlaying = true
+	p.beatDuration = beatDuration(w, p.bpm)
+	p.clockBuffer = p.beatDuration - 1
+	click := make(chan struct{})
+	go clock(p, &click)
 	for {
 		go func() {
 			doubleTime = w.doubletimeCheck.Checked
@@ -35,11 +35,11 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 		}()
 		select {
 		case <-changeBpmChan:
-			newBeat := newBeat(w, p.bpm)
+			newBeatDuration := beatDuration(w, p.bpm)
 			select {
 			case <-click:
-				p.beat = newBeat
-				p.clockBuffer = p.beat - 10
+				p.beatDuration = newBeatDuration
+				p.clockBuffer = p.beatDuration - 1
 			}
 		default:
 			for i, char := range *p.pattern {
@@ -69,13 +69,13 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 	}
 }
 
-func newBeat(w *Widgets, bpm int) int {
+func beatDuration(w *Widgets, bpm int) int {
 	if w.doubletimeCheck.Checked {
 		bpm *= 4
 	} else {
 		bpm *= 2
 	}
-	return 6000000 / bpm
+	return 600000 / bpm
 }
 
 func stop(p *Parameters) {
@@ -85,12 +85,12 @@ func stop(p *Parameters) {
 }
 
 func clock(p *Parameters, click *chan struct{}) {
-	masterClock := time.NewTicker(10 * time.Microsecond)
+	masterClock := time.NewTicker(100 * time.Microsecond)
 	for {
 		select {
 		case <-masterClock.C:
 			p.clockBuffer++
-			if p.clockBuffer == p.beat {
+			if p.clockBuffer == p.beatDuration {
 				*click <- struct{}{}
 				p.clockBuffer = 0
 			}

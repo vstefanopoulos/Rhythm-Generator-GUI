@@ -41,7 +41,7 @@ type Parameters struct {
 	beats           int
 	bpm             int
 	inversionDegree int
-	beat            int
+	beatDuration    int
 	clockBuffer     int
 	euclidean       string
 	custom          string
