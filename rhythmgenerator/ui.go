@@ -67,8 +67,8 @@ func Ui() {
 		snr:           makeBuffer("./wav/rim.wav"),
 		side:          makeBuffer("./wav/side.wav"),
 		hh:            makeBuffer("./wav/hh.wav"),
-		clickDownBeat: makeBuffer("./wav/clickLow.wav"),
-		click:         makeBuffer("./wav/click.wav"),
+		clickDownBeat: makeBuffer("./wav/ride_bell.wav"),
+		click:         makeBuffer("./wav/tambourine.wav"),
 	}
 	RGgui := app.New()
 	window := RGgui.NewWindow("Rhythm Generator")

@@ -46,10 +46,13 @@ func play(p *Parameters, w *Widgets, buf *Buffer) {
 				select {
 				case <-click:
 					go func() {
+						if i == 0 && w.accentDownbeatCheck.Checked {
+							playClick(buf.clickDownBeat)
+						}
 						if w.clickCheck.Checked {
 							switch {
 							case i == 0 && w.accentDownbeatCheck.Checked:
-								playClick(buf.clickDownBeat)
+								return
 							case doubleTime && i%4 == 0:
 								playClick(buf.click)
 							case !doubleTime && i%2 == 0:
@@ -122,7 +125,6 @@ func playSpeaker(char rune, w *Widgets, buf *Buffer) {
 	case char == 'O':
 		kick := buf.kick.Streamer(0, buf.kick.Len())
 		speaker.Play(kick)
-		speaker.Play(buf.hh.Streamer(0, buf.hh.Len()))
 	case char == 'X':
 		speaker.Play(buf.snr.Streamer(0, buf.snr.Len()))
 	case char == 'x':
