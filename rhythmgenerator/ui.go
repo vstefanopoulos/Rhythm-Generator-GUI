@@ -162,11 +162,21 @@ func Ui() {
 
 	// B U T T O N S - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	w.invertRightButton = widget.NewButton("Invert Right", func() {
-		invertRight(p.pattern, w, p)
+		p.inversionDegree += 1
+		e := handleErrors(w, p)
+		if e != nil {
+			return
+		}
+		callGenerators(w, p)
 	})
 
 	w.invertLeftButton = widget.NewButton("Invert Left", func() {
-		invertLeft(p.pattern, w, p)
+		p.inversionDegree -= 1
+		e := handleErrors(w, p)
+		if e != nil {
+			return
+		}
+		callGenerators(w, p)
 	})
 
 	w.playButton = widget.NewButton("Play", func() {
