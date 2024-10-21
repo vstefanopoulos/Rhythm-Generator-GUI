@@ -112,7 +112,7 @@ func makeBuffer(file string) *beep.Buffer {
 		log.Fatal(err)
 	}
 
-	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/35))
+	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/30)) // was: format.SampleRate.N(time.Second/35)
 
 	buffer := beep.NewBuffer(format)
 	buffer.Append(streamer)
